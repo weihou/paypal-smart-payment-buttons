@@ -80,9 +80,14 @@ export function validateOrder(orderID : string, { clientID, merchantID } : { cli
             }
         }
 
-        const xpropMerchantID = window.xprops.merchantID && window.xprops.merchantID[0];
-        if (xpropMerchantID && payeeMerchantID !== xpropMerchantID) {
-            throw new Error(`Payee passed in transaction does not match expected merchant id: ${ xpropMerchantID }`);
+        // skip this check on msp or email until we can get payees from all purchaseUnits
+        if (window.xprops.merchantID &&
+            window.xprops.merchantID.length === 1 &&
+            window.xprops.merchantID[0].indexOf('@') === -1
+        ) {
+            if (payeeMerchantID !== window.xprops.merchantID[0]) {
+                throw new Error(`Payee passed in transaction does not match expected merchant id: ${ window.xprops.merchantID }`);
+            }
         }
     });
 }
