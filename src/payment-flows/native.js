@@ -10,7 +10,7 @@ import { type CrossDomainWindowType, getDomain, isWindowClosed, onCloseWindow } 
 import type { ButtonProps, Components, ServiceData, Config } from '../button/props';
 import { NATIVE_CHECKOUT_URI, WEB_CHECKOUT_URI, NATIVE_CHECKOUT_POPUP_URI } from '../config';
 import { firebaseSocket, type MessageSocket, type FirebaseConfig } from '../api';
-import { getLogger, promiseOne } from '../lib';
+import { getLogger, promiseOne, promiseNoop } from '../lib';
 import { USER_ACTION, FPTI_TRANSITION } from '../constants';
 
 import type { PaymentFlow, PaymentFlowInstance, Payment } from './types';
@@ -27,12 +27,13 @@ const POST_MESSAGE = {
 };
 
 const SOCKET_MESSAGE = {
-    SET_PROPS:  'setProps',
-    GET_PROPS:  'getProps',
-    CLOSE:      'close',
-    ON_APPROVE: 'onApprove',
-    ON_CANCEL:  'onCancel',
-    ON_ERROR:   'onError'
+    SET_PROPS:          'setProps',
+    GET_PROPS:          'getProps',
+    CLOSE:              'close',
+    ON_SHIPPING_CHANGE: 'onShippingChange',
+    ON_APPROVE:         'onApprove',
+    ON_CANCEL:          'onCancel',
+    ON_ERROR:           'onError'
 };
 
 const NATIVE_DOMAIN = 'https://www.paypal.com';
@@ -73,8 +74,12 @@ function isAndroidChrome() : boolean {
     return isAndroid() && isChrome();
 }
 
+function useTemporarySandboxIOSFix() : boolean {
+    return isIOSSafari() && window.location.hostname === 'www.sandbox.paypal.com';
+}
+
 function useDirectAppSwitch() : boolean {
-    return isAndroidChrome();
+    return isAndroidChrome() || useTemporarySandboxIOSFix();
 }
 
 function didAppSwitch(popupWin : ?CrossDomainWindowType) : boolean {
@@ -103,15 +108,19 @@ let initialPageUrl;
 
 function isNativeEligible({ props, config, serviceData } : { props : ButtonProps, config : Config, serviceData : ServiceData }) : boolean {
     
-    const { platform, onShippingChange, createBillingAgreement, createSubscription } = props;
+    const { platform, onShippingChange, createBillingAgreement, createSubscription, env } = props;
     const { firebase: firebaseConfig } = config;
     const { eligibility } = serviceData;
+
+    if (env === ENV.LOCAL || env === ENV.STAGE) {
+        return false;
+    }
 
     if (platform !== PLATFORM.MOBILE) {
         return false;
     }
 
-    if (onShippingChange) {
+    if (onShippingChange && !isNativeOptedIn({ props })) {
         return false;
     }
 
@@ -191,14 +200,19 @@ type NativeSDKProps = {|
 
 function initNative({ props, components, config, payment, serviceData } : { props : ButtonProps, components : Components, config : Config, payment : Payment, serviceData : ServiceData }) : PaymentFlowInstance {
     const { createOrder, onApprove, onCancel, onError, commit, getPageUrl,
-        buttonSessionID, env, stageHost, apiStageHost, onClick } = props;
+        buttonSessionID, env, stageHost, apiStageHost, onClick, onShippingChange } = props;
     const { facilitatorAccessToken, sdkMeta } = serviceData;
     const { fundingSource } = payment;
     const { version, firebase: firebaseConfig } = config;
 
+    if (!firebaseConfig) {
+        throw new Error(`Can not run native flow without firebase config`);
+    }
+
     const clean = cleanup();
     let approved = false;
     let cancelled = false;
+    let didFallback = false;
 
     const close = memoize(() => {
         return clean.all();
@@ -208,20 +222,29 @@ function initNative({ props, components, config, payment, serviceData } : { prop
         paypal.postRobot.once(event, { window: popupWin, domain }, handler);
 
     const fallbackToWebCheckout = (fallbackWin? : ?CrossDomainWindowType) => {
+        didFallback = true;
         const checkoutPayment = { ...payment, win: fallbackWin, isClick: false };
         const instance = checkout.init({ props, components, payment: checkoutPayment, config, serviceData });
         clean.register(() => instance.close());
         return instance.start();
     };
 
+    const getNativeDomain = memoize(() : string => {
+        return NATIVE_DOMAIN;
+    });
+
+    const getNativePopupDomain = memoize(() : string => {
+        return NATIVE_POPUP_DOMAIN;
+    });
+
     const getNativeUrl = memoize(({ pageUrl = initialPageUrl, sessionUID } = {}) : string => {
-        return extendUrl(`${ NATIVE_DOMAIN }${ NATIVE_CHECKOUT_URI[fundingSource] }`, {
+        return extendUrl(`${ getNativeDomain() }${ NATIVE_CHECKOUT_URI[fundingSource] }`, {
             query: { sdkMeta, sessionUID, buttonSessionID, pageUrl }
         });
     });
 
     const getNativePopupUrl = memoize(() : string => {
-        return extendUrl(`${ NATIVE_POPUP_DOMAIN }${ NATIVE_CHECKOUT_POPUP_URI[fundingSource] }`, {
+        return extendUrl(`${ getNativePopupDomain() }${ NATIVE_CHECKOUT_POPUP_URI[fundingSource] }`, {
             query: { sdkMeta }
         });
     });
@@ -283,6 +306,30 @@ function initNative({ props, components, config, payment, serviceData } : { prop
             return getSDKProps();
         });
 
+        const onShippingChangeListener = socket.on(SOCKET_MESSAGE.ON_SHIPPING_CHANGE, ({ data }) => {
+            getLogger().info(`native_message_onshippingchange`).flush();
+            if (onShippingChange) {
+                let resolved = true;
+                const actions = {
+                    resolve: () => {
+                        return ZalgoPromise.try(() => {
+                            resolved = true;
+                        });
+                    },
+                    reject: () => {
+                        return ZalgoPromise.try(() => {
+                            resolved = false;
+                        });
+                    }
+                };
+                return onShippingChange(data, actions).then(() => {
+                    return {
+                        resolved
+                    };
+                });
+            }
+        });
+
         const onApproveListener = socket.on(SOCKET_MESSAGE.ON_APPROVE, ({ data: { payerID, paymentID, billingToken } }) => {
             approved = true;
             getLogger().info(`native_message_onapprove`).flush();
@@ -312,6 +359,7 @@ function initNative({ props, components, config, payment, serviceData } : { prop
         });
 
         clean.register(getPropsListener.cancel);
+        clean.register(onShippingChangeListener.cancel);
         clean.register(onApproveListener.cancel);
         clean.register(onCancelListener.cancel);
         clean.register(onErrorListener.cancel);
@@ -362,7 +410,7 @@ function initNative({ props, components, config, payment, serviceData } : { prop
         const validatePromise = validate();
         const delayPromise = ZalgoPromise.delay(500);
 
-        const detectWebSwitchListener = listen(nativeWin, NATIVE_DOMAIN, POST_MESSAGE.DETECT_WEB_SWITCH, () => {
+        const detectWebSwitchListener = listen(nativeWin, getNativeDomain(), POST_MESSAGE.DETECT_WEB_SWITCH, () => {
             getLogger().info(`native_post_message_detect_web_switch`).flush();
             return detectWebSwitch(nativeWin);
         });
@@ -401,7 +449,7 @@ function initNative({ props, components, config, payment, serviceData } : { prop
 
         const closeListener = onCloseWindow(popupWin, () => {
             return ZalgoPromise.delay(1000).then(() => {
-                if (!approved && !cancelled) {
+                if (!approved && !cancelled && !didFallback) {
                     return ZalgoPromise.all([
                         onCancel(),
                         close()
@@ -416,7 +464,7 @@ function initNative({ props, components, config, payment, serviceData } : { prop
 
         const validatePromise = validate();
 
-        const awaitRedirectListener = listen(popupWin, NATIVE_POPUP_DOMAIN, POST_MESSAGE.AWAIT_REDIRECT, ({ data: { pageUrl } }) => {
+        const awaitRedirectListener = listen(popupWin, getNativePopupDomain(), POST_MESSAGE.AWAIT_REDIRECT, ({ data: { pageUrl } }) => {
             getLogger().info(`native_post_message_await_redirect`).flush();
             return validatePromise.then(valid => {
                 if (!valid) {
@@ -431,17 +479,17 @@ function initNative({ props, components, config, payment, serviceData } : { prop
             });
         });
 
-        const detectAppSwitchListener = listen(popupWin, NATIVE_POPUP_DOMAIN, POST_MESSAGE.DETECT_APP_SWITCH, () => {
+        const detectAppSwitchListener = listen(popupWin, getNativePopupDomain(), POST_MESSAGE.DETECT_APP_SWITCH, () => {
             getLogger().info(`native_post_message_detect_app_switch`).flush();
             return detectAppSwitch({ sessionUID });
         });
 
-        const detectWebSwitchListener = listen(popupWin, NATIVE_DOMAIN, POST_MESSAGE.DETECT_WEB_SWITCH, () => {
+        const detectWebSwitchListener = listen(popupWin, getNativeDomain(), POST_MESSAGE.DETECT_WEB_SWITCH, () => {
             getLogger().info(`native_post_message_detect_web_switch`).flush();
             return detectWebSwitch(popupWin);
         });
 
-        const onCompleteListener = listen(popupWin, NATIVE_DOMAIN, POST_MESSAGE.ON_COMPLETE, () => {
+        const onCompleteListener = listen(popupWin, getNativeDomain(), POST_MESSAGE.ON_COMPLETE, () => {
             getLogger().info(`native_post_message_on_complete`).flush();
             close();
         });
@@ -476,9 +524,7 @@ function initNative({ props, components, config, payment, serviceData } : { prop
         });
     };
 
-    const start = memoize(() => {
-        // pass
-    });
+    const start = promiseNoop;
 
     return {
         click,

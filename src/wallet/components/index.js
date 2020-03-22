@@ -2,5 +2,5 @@
 
 export * from './page';
 export * from './wallet';
-export * from './wallet-item';
+export * from './walletItem';
 export * from './style';

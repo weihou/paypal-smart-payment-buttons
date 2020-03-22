@@ -3,6 +3,11 @@
 import { randomBytes } from 'crypto';
 
 import express from 'express';
+import webpack from 'webpack';
+import webpackDevMiddleware from 'webpack-dev-middleware';
+import { noop } from 'belter';
+
+import { WEBPACK_CONFIG_WALLET_LOCAL_DEBUG } from '../webpack.config';
 
 import type { ExpressRequest, ExpressResponse } from './types';
 import { getButtonMiddleware, getMenuMiddleware, getWalletMiddleware } from './components';
@@ -10,7 +15,24 @@ import { getButtonMiddleware, getMenuMiddleware, getWalletMiddleware } from './c
 const app = express();
 const PORT = process.env.PORT || 8003;
 
+const cache = {
+    // eslint-disable-next-line no-unused-vars
+    get: (key) => Promise.resolve(),
+    set: (key, value) => Promise.resolve(value)
+};
+
+const logger = {
+    debug: noop,
+    info:  noop,
+    warn:  noop,
+    error: (err) => {
+        throw new Error(err);
+    }
+};
+
 const buttonMiddleware = getButtonMiddleware({
+    cache,
+    logger,
     graphQL: (req, payload) => {
         // $FlowFixMe
         return Promise.resolve(payload.map(({ query }) => {
@@ -77,7 +99,10 @@ const buttonMiddleware = getButtonMiddleware({
         }
     }
 });
+
 const walletMiddleware = getWalletMiddleware({
+    cache,
+    logger,
     graphQL: (req, payload) => {
         // $FlowFixMe
         return Promise.resolve(payload.map(({ query }) => {
@@ -88,41 +113,118 @@ const walletMiddleware = getWalletMiddleware({
                             declinedInstruments: [],
                             fundingOptions:      [
                                 {
-                                    'id':                'CC-ABC12345',
+                                    'id':                           'BA-XH7B6GNDFFJV2',
                                     'fundingInstrument': {
-                                        'id':                       'CC-ABC12345',
-                                        'name':                     'VISA',
-                                        'issuerProductDescription': 'The Bank Card Platinum Rewards',
-                                        'type':                     'CREDIT_CARD',
-                                        'instrumentSubType':        'CREDIT',
-                                        'lastDigits':               '1234',
-                                        'image':                    {
-                                            'url': {
-                                                'href': ''
-                                            },
-                                            'width':  '96',
-                                            'height': '96'
-                                        },
-                                        'isPreferred': false
+                                        'id':                       'BA-XH7B6GNDFFJV2',
+                                        'name':                     'WELLS FARGO BANK NA',
+                                        'issuerProductDescription': null,
+                                        'type':                     'BANK_ACCOUNT',
+                                        'instrumentSubType':        'CHECKING',
+                                        'lastDigits':               '9673',
+                                        'image':                    null,
+                                        'institutionImages':        [],
+                                        'isPreferred':              true,
+                                        'attribution':              null,
+                                        'rewards':                  null,
+                                        '__typename':               'FundingInstrument',
+                                        'creditFIAdditionalData':   null,
+                                        'payerDisclaimer':          null
                                     }
-                                },
-                                {
-                                    'id':                'CC-ABC56789',
+                                }, {
+                                    'id':                           'BC-5932XGYM5Y3QC',
                                     'fundingInstrument': {
-                                        'id':                       'CC-ABC56789',
-                                        'name':                     'AMEX',
-                                        'issuerProductDescription': 'The Amex Rewards Card',
+                                        'id':                       'BC-5932XGYM5Y3QC',
+                                        'name':                     'BILL_ME_LATER',
+                                        'issuerProductDescription': null,
+                                        'type':                     'PAYPAL_CREDIT',
+                                        'instrumentSubType':        'PAYPAL',
+                                        'lastDigits':               null,
+                                        'image':                    null,
+                                        'institutionImages':        [],
+                                        'isPreferred':              false,
+                                        'attribution':              null,
+                                        'rewards':                  null,
+                                        '__typename':               'FundingInstrument',
+                                        'creditFIAdditionalData':   null,
+                                        'payerDisclaimer':          null
+                                    }
+                                }, {
+                                    'id':                           'CC-J327ZUEUDE8QL',
+                                    'fundingInstrument': {
+                                        'id':                       'CC-J327ZUEUDE8QL',
+                                        'name':                     'VISA',
+                                        'issuerProductDescription': 'Wells Fargo Bank',
                                         'type':                     'CREDIT_CARD',
-                                        'instrumentSubType':        'CREDIT',
-                                        'lastDigits':               '8654',
+                                        'instrumentSubType':        'DEBIT',
+                                        'lastDigits':               '8558',
                                         'image':                    {
                                             'url': {
-                                                'href': ''
+                                                'href':             'https://pics.paypal.com//00/s/OTY5WDE1MzZYUE5H/p/ZTkxNjMyNjAtOTZiYy00YzllLTlmMDQtNDM5MmVkYjJkYjFk/image_0.png',
+                                                '__typename':       'GenericURL'
                                             },
-                                            'width':  '96',
-                                            'height': '96'
+                                            'width':                '96',
+                                            'height':               '96',
+                                            '__typename':           'CardImage'
                                         },
-                                        'isPreferred': false
+                                        'institutionImages':        [],
+                                        'isPreferred':              false,
+                                        'attribution':              null,
+                                        'rewards':                  null,
+                                        '__typename':               'FundingInstrument',
+                                        'creditFIAdditionalData':   null,
+                                        'payerDisclaimer':          null
+                                    }
+                                }, {
+                                    'id':                           'CC-WXS325L2PS75E',
+                                    'fundingInstrument': {
+                                        'id':                       'CC-WXS325L2PS75E',
+                                        'name':                     'VISA',
+                                        'issuerProductDescription': 'Wells Fargo Platinum Visa Credit Card',
+                                        'type':                     'CREDIT_CARD',
+                                        'instrumentSubType':        'CREDIT',
+                                        'lastDigits':               '5335',
+                                        'image':                    {
+                                            'url': {
+                                                'href':             'https://pics.paypal.com//00/s/OTY5WDE1MzhYUE5H/p/Y2IwMTk0Y2YtOTY4OS00ZWMwLWI1NjgtZmI5MDQzOWUyMmZk/image_0.png',
+                                                '__typename':       'GenericURL'
+                                            },
+                                            'width':                '96',
+                                            'height':               '96',
+                                            '__typename':           'CardImage'
+                                        },
+                                        'institutionImages':        [],
+                                        'isPreferred':              false,
+                                        'attribution':              null,
+                                        'rewards':                  null,
+                                        '__typename':               'FundingInstrument',
+                                        'creditFIAdditionalData':   null,
+                                        'payerDisclaimer':          null
+                                    }
+                                }, {
+                                    'id':                           'CC-ATXCFBG3VN2GQ',
+                                    'fundingInstrument': {
+                                        'id':                       'CC-ATXCFBG3VN2GQ',
+                                        'name':                     'VISA',
+                                        'issuerProductDescription': 'Barclaycard with Apple Rewards',
+                                        'type':                     'CREDIT_CARD',
+                                        'instrumentSubType':        'CREDIT',
+                                        'lastDigits':               '3817',
+                                        'image':                    {
+                                            'url': {
+                                                'href':             'https://pics.paypal.com//00/s/OTY5WDE1MzZYUE5H/p/MjA5YzU0OTUtM2JjNi00OGE5LTg3ZjgtMWM0MzA0YjM1NWJk/image_0.png',
+                                                '__typename':       'GenericURL'
+                                            },
+                                            'width':                '96',
+                                            'height':               '96',
+                                            '__typename':           'CardImage'
+                                        },
+                                        'institutionImages':        [],
+                                        'isPreferred':              false,
+                                        'attribution':              null,
+                                        'rewards':                  null,
+                                        '__typename':               'FundingInstrument',
+                                        'creditFIAdditionalData':   null,
+                                        'payerDisclaimer':          null
                                     }
                                 }
                             ]
@@ -140,8 +242,7 @@ const walletMiddleware = getWalletMiddleware({
 
 const menuMiddleware = getMenuMiddleware({});
 
-
-app.get('/smart/buttons', (req : ExpressRequest, res : ExpressResponse) => {
+app.use('/smart/buttons', (req : ExpressRequest, res : ExpressResponse, next) => {
     const nonce = randomBytes(16).toString('base64').replace(/[^a-zA-Z0-9_]/g, '');
 
     res.locals = res.locals || {};
@@ -149,10 +250,10 @@ app.get('/smart/buttons', (req : ExpressRequest, res : ExpressResponse) => {
 
     res.header('content-security-policy', `style-src self 'nonce-${ nonce }'; script-src self 'nonce-${ nonce }';`);
     
-    return buttonMiddleware(req, res);
-});
+    next();
+}, buttonMiddleware);
 
-app.get('/smart/menu', (req : ExpressRequest, res : ExpressResponse) => {
+app.use('/smart/menu', (req : ExpressRequest, res : ExpressResponse, next) => {
     const nonce = randomBytes(16).toString('base64').replace(/[^a-zA-Z0-9_]/g, '');
 
     res.locals = res.locals || {};
@@ -160,19 +261,21 @@ app.get('/smart/menu', (req : ExpressRequest, res : ExpressResponse) => {
 
     res.header('content-security-policy', `style-src self 'nonce-${ nonce }'; script-src self 'nonce-${ nonce }';`);
 
-    return menuMiddleware(req, res);
-});
+    next();
+}, menuMiddleware);
 
-app.get('/smart/wallet', (req : ExpressRequest, res : ExpressResponse) => {
+const walletScriptMiddleware = webpackDevMiddleware(webpack(WEBPACK_CONFIG_WALLET_LOCAL_DEBUG), { serverSideRender: true });
+
+app.use('/smart/wallet', (req : ExpressRequest, res : ExpressResponse, next) => {
     const nonce = randomBytes(16).toString('base64').replace(/[^a-zA-Z0-9_]/g, '');
     
     res.locals = res.locals || {};
     res.locals.nonce = nonce;
     
     res.header('content-security-policy', `style-src self 'nonce-${ nonce }'; script-src self 'nonce-${ nonce }';`);
-    
-    return walletMiddleware(req, res);
-});
+
+    next();
+}, walletScriptMiddleware, walletMiddleware);
 
 app.listen(PORT, () => {
     // eslint-disable-next-line no-console

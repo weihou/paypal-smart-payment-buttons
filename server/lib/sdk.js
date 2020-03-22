@@ -41,17 +41,25 @@ export type SDKMiddleware = ({|
     logBuffer : LoggerBufferType
 |}) => void | Promise<void>;
 
+export type SDKScriptMiddleware = ({|
+    req : ExpressRequest,
+    res : ExpressResponse,
+    logBuffer : LoggerBufferType,
+    params : Object
+|}) => void | Promise<void>;
+
 export type ExpressMiddleware = (
     req : ExpressRequest,
     res : ExpressResponse
 ) => void | Promise<void>;
 
-export function sdkMiddleware({ logger = defaultLogger, cache } : SDKMiddlewareOptions, middleware : SDKMiddleware) : ExpressMiddleware {
-    const logBuffer = getLogBuffer(logger);
-    
+let logBuffer;
+
+export function sdkMiddleware({ logger = defaultLogger, cache } : SDKMiddlewareOptions, { app, script } : { app : SDKMiddleware, script? : SDKScriptMiddleware }) : ExpressMiddleware {
+    logBuffer = logBuffer || getLogBuffer(logger);
     startWatchers({ logBuffer, cache });
 
-    return async (req : ExpressRequest, res : ExpressResponse) : Promise<void> => {
+    const appMiddleware = async (req : ExpressRequest, res : ExpressResponse) : Promise<void> => {
         logBuffer.flush(req);
 
         try {
@@ -64,7 +72,7 @@ export function sdkMiddleware({ logger = defaultLogger, cache } : SDKMiddlewareO
             }
 
             const sdkMeta = getSDKMetaString(req);
-            
+
             let meta;
 
             try {
@@ -74,7 +82,8 @@ export function sdkMiddleware({ logger = defaultLogger, cache } : SDKMiddlewareO
                 return clientErrorResponse(res, `Invalid sdk meta: ${ (req.query.sdkMeta || '').toString() }`);
             }
 
-            return await middleware({ req, res, params, meta, logBuffer, sdkMeta });
+            await app({ req, res, params, meta, logBuffer, sdkMeta });
+            logBuffer.flush(req);
 
         } catch (err) {
             console.error(err.stack ? err.stack : err); // eslint-disable-line no-console
@@ -82,4 +91,46 @@ export function sdkMiddleware({ logger = defaultLogger, cache } : SDKMiddlewareO
             return serverErrorResponse(res, err.stack ? err.stack : err.toString());
         }
     };
+
+    const scriptMiddleware = async (req : ExpressRequest, res : ExpressResponse) : Promise<void> => {
+        logBuffer.flush(req);
+
+        try {
+            if (!script) {
+                throw new Error(`No script available`);
+            }
+
+            let params;
+
+            try {
+                params = undotify(req.query);
+            } catch (err) {
+                return clientErrorResponse(res, `Invalid params: ${ safeJSON(req.query) }`);
+            }
+
+            await script({ req, res, params, logBuffer });
+            logBuffer.flush(req);
+
+        } catch (err) {
+            console.error(err.stack ? err.stack : err); // eslint-disable-line no-console
+            logger.error(req, EVENT.ERROR, { err: err.stack ? err.stack : err.toString() });
+            return serverErrorResponse(res, err.stack ? err.stack : err.toString());
+        }
+    };
+
+    const middleware = async (req : ExpressRequest, res : ExpressResponse) : Promise<void> => {
+        const url = req.url.split('?')[0];
+
+        if (url === '/') {
+            return await appMiddleware(req, res);
+        }
+
+        if (url === '/script') {
+            return await scriptMiddleware(req, res);
+        }
+
+        res.status(404).send(`404 not found`);
+    };
+
+    return middleware;
 }
