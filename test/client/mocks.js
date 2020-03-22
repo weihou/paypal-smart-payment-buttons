@@ -442,7 +442,12 @@ export function getGraphQLApiMock(options : Object = {}) : MockEndpoint {
                                     total: {
                                         currencyCode: 'USD'
                                     }
-                                }
+                                },
+                                payees: [
+                                    {
+                                        merchant_id: 'XYZ12345'
+                                    }
+                                ]
                             }
                         }
                     }

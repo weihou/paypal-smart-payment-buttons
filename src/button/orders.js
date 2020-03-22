@@ -4,10 +4,56 @@ import { ZalgoPromise } from 'zalgo-promise/src';
 import { INTENT, SDK_QUERY_KEYS, FUNDING } from '@paypal/sdk-constants/src';
 
 import { INTEGRATION_ARTIFACT, USER_EXPERIENCE_FLOW, PRODUCT_FLOW } from '../constants';
-import { updateClientConfig, getPayee } from '../api';
+import { updateClientConfig } from '../api';
 import { callGraphQL } from '../api/api';
 import { getLogger } from '../lib';
 import { CLIENT_ID_PAYEE_NO_MATCH } from '../config';
+
+// check whether each merchantIdsOrEmails is in payees and each payee is in merchantIds
+// merchantIdsOrEmails is an arry of mixed merchant id and emails
+// payees is an array of payee object {merchant_id, email}
+const isValidMerchants = (merchantIdsOrEmails, payees) => {
+    if (merchantIdsOrEmails.length !== payees.length) {
+        return false;
+    }
+
+    // split merchantIds into 2 arrays, one for emails and one for merchant ids
+    const merchantEmails = [];
+    const merchantIds = [];
+
+    merchantIdsOrEmails.forEach(id => {
+        if (id.indexOf('@') === -1) {
+            merchantIds.push(id);
+        } else {
+            merchantEmails.push(id.toLowerCase());
+        }
+    });
+
+    const foundEmail = merchantEmails.every(email => {
+        return payees.some(payee => {
+            return (email === payee.email.toLowerCase());
+        });
+    });
+
+    const foundMerchantId = merchantIds.every(id => {
+        return payees.some(payee => {
+            return (id === payee.merchant_id);
+        });
+    });
+
+    // if the id or email is not in payees
+    if (!foundEmail || !foundMerchantId) {
+        return false;
+    }
+
+    // now check payees
+    // each payer should either has merchant_id in merchantIds or has email in merchantEmails
+    const foundPayee = payees.every(payee => {
+        return (merchantIds.includes(payee.merchant_id) || merchantEmails.includes(payee.email));
+    });
+
+    return foundPayee;
+};
 
 export function updateButtonClientConfig({ orderID, fundingSource, inline = false } : { orderID : string, fundingSource : $Values<typeof FUNDING>, inline : boolean | void }) : ZalgoPromise<void> {
     return updateClientConfig({
@@ -20,32 +66,27 @@ export function updateButtonClientConfig({ orderID, fundingSource, inline = fals
 }
 
 export function validateOrder(orderID : string, { clientID, merchantID } : { clientID : ?string, merchantID : $ReadOnlyArray<string> }) : ZalgoPromise<void> {
-    
-    // $FlowFixMe
-    return ZalgoPromise.all([
-
-        callGraphQL({
-            query: `
-                query GetCheckoutDetails($orderID: String!) {
-                    checkoutSession(token: $orderID) {
-                        cart {
-                            intent
-                            amounts {
-                                total {
-                                    currencyCode
-                                }
+    return callGraphQL({
+        query: `
+            query GetCheckoutDetails($orderID: String!) {
+                checkoutSession(token: $orderID) {
+                    cart {
+                        intent
+                        amounts {
+                            total {
+                                currencyCode
                             }
+                        }
+                        payees {
+                            merchant_id
+                            email
                         }
                     }
                 }
-            `,
-            variables: { orderID }
-        }),
-        
-        getPayee(orderID)
-
-    ]).then(([ gql, payee ]) => {
-
+            }
+        `,
+        variables: { orderID }
+    }).then(gql => {
         const cart = gql.checkoutSession.cart;
 
         const intent = (cart.intent.toLowerCase() === 'sale') ? INTENT.CAPTURE : cart.intent.toLowerCase();
@@ -62,32 +103,27 @@ export function validateOrder(orderID : string, { clientID, merchantID } : { cli
             throw new Error(`Expected currency from order api call to be ${ expectedCurrency }, got ${ currency }. Please ensure you are passing ${ SDK_QUERY_KEYS.CURRENCY }=${ currency } to the sdk`);
         }
 
-        const payeeMerchantID = payee && payee.merchant && payee.merchant.id;
-        const actualMerchantID = merchantID && merchantID.length && merchantID[0];
+        const payees = cart.payees;
 
-        if (!actualMerchantID) {
+        if (!merchantID || merchantID.length === 0) {
             throw new Error(`Could not determine correct merchant id`);
         }
 
-        if (!payeeMerchantID) {
-            throw new Error(`No payee found in transaction. Expected ${ actualMerchantID }`);
+        if (!payees || payees.length === 0) {
+            throw new Error(`No payee found in transaction. Expected ${ merchantID.join() }`);
         }
 
-        if (payeeMerchantID !== actualMerchantID) {
+        if (!isValidMerchants(merchantID, payees)) {
             if (clientID && CLIENT_ID_PAYEE_NO_MATCH.indexOf(clientID) === -1) {
                 getLogger().info(`client_id_payee_no_match_${ clientID }`).flush();
-                // throw new Error(`Payee passed in transaction does not match expected merchant id: ${ actualMerchantID }`);
+                // throw new Error(`Payee passed in transaction does not match expected merchant id: ${ merchantID.join() }`);
             }
         }
 
-        // skip this check on msp or email until we can get payees from all purchaseUnits
-        if (window.xprops.merchantID &&
-            window.xprops.merchantID.length === 1 &&
-            window.xprops.merchantID[0].indexOf('@') === -1
-        ) {
-            if (payeeMerchantID !== window.xprops.merchantID[0]) {
-                throw new Error(`Payee passed in transaction does not match expected merchant id: ${ window.xprops.merchantID }`);
-            }
+        // compare merchantID and payees
+        const xpropMerchantID = window.xprops.merchantID;
+        if (xpropMerchantID && xpropMerchantID.length > 0 && !isValidMerchants(window.xprops.merchantID, payees)) {
+            throw new Error(`Payee passed in transaction does not match expected merchant id: ${ window.xprops.merchantID }`);
         }
     });
 }
