@@ -1,13 +1,30 @@
 /* @flow */
 
 import { ZalgoPromise } from 'zalgo-promise/src';
-import { INTENT, SDK_QUERY_KEYS, FUNDING } from '@paypal/sdk-constants/src';
+import { INTENT, SDK_QUERY_KEYS, FUNDING, CURRENCY } from '@paypal/sdk-constants/src';
+import { stringifyError } from 'belter/src';
 
 import { INTEGRATION_ARTIFACT, USER_EXPERIENCE_FLOW, PRODUCT_FLOW } from '../constants';
-import { updateClientConfig } from '../api';
-import { callGraphQL } from '../api/api';
+import { updateClientConfig, getSupplementalOrderInfo } from '../api';
 import { getLogger } from '../lib';
 import { CLIENT_ID_PAYEE_NO_MATCH } from '../config';
+
+export function updateButtonClientConfig({ orderID, fundingSource, inline = false } : {| orderID : string, fundingSource : $Values<typeof FUNDING>, inline : boolean | void |}) : ZalgoPromise<void> {
+    return updateClientConfig({
+        orderID,
+        fundingSource,
+        integrationArtifact: INTEGRATION_ARTIFACT.PAYPAL_JS_SDK,
+        userExperienceFlow:  inline ? USER_EXPERIENCE_FLOW.INLINE : USER_EXPERIENCE_FLOW.INCONTEXT,
+        productFlow:         PRODUCT_FLOW.SMART_PAYMENT_BUTTONS
+    });
+}
+
+type ValidateOptions = {|
+    clientID : ?string,
+    merchantID : $ReadOnlyArray<string>,
+    expectedIntent : $Values<typeof INTENT>,
+    expectedCurrency : $Values<typeof CURRENCY>
+|};
 
 // check whether each merchantIdsOrEmails is in payees and each payee is in merchantIds
 // merchantIdsOrEmails is an arry of mixed merchant id and emails
@@ -31,13 +48,13 @@ const isValidMerchants = (merchantIdsOrEmails, payees) => {
 
     const foundEmail = merchantEmails.every(email => {
         return payees.some(payee => {
-            return (email === payee.email.toLowerCase());
+            return email === (payee.email && payee.email.stringValue && payee.email.stringValue.toLowerCase());
         });
     });
 
     const foundMerchantId = merchantIds.every(id => {
         return payees.some(payee => {
-            return (id === payee.merchant_id);
+            return (id === payee.merchantId);
         });
     });
 
@@ -49,51 +66,18 @@ const isValidMerchants = (merchantIdsOrEmails, payees) => {
     // now check payees
     // each payer should either has merchant_id in merchantIds or has email in merchantEmails
     const foundPayee = payees.every(payee => {
-        return (merchantIds.includes(payee.merchant_id) || merchantEmails.includes(payee.email));
+        return (merchantIds.includes(payee.merchantId) || merchantEmails.includes(payee.email && payee.email.stringValue));
     });
 
     return foundPayee;
 };
 
-export function updateButtonClientConfig({ orderID, fundingSource, inline = false } : { orderID : string, fundingSource : $Values<typeof FUNDING>, inline : boolean | void }) : ZalgoPromise<void> {
-    return updateClientConfig({
-        orderID,
-        fundingSource,
-        integrationArtifact: INTEGRATION_ARTIFACT.PAYPAL_JS_SDK,
-        userExperienceFlow:  inline ? USER_EXPERIENCE_FLOW.INLINE : USER_EXPERIENCE_FLOW.INCONTEXT,
-        productFlow:         PRODUCT_FLOW.SMART_PAYMENT_BUTTONS
-    });
-}
-
-export function validateOrder(orderID : string, { clientID, merchantID } : { clientID : ?string, merchantID : $ReadOnlyArray<string> }) : ZalgoPromise<void> {
-    return callGraphQL({
-        query: `
-            query GetCheckoutDetails($orderID: String!) {
-                checkoutSession(token: $orderID) {
-                    cart {
-                        intent
-                        amounts {
-                            total {
-                                currencyCode
-                            }
-                        }
-                        payees {
-                            merchant_id
-                            email
-                        }
-                    }
-                }
-            }
-        `,
-        variables: { orderID }
-    }).then(gql => {
-        const cart = gql.checkoutSession.cart;
+export function validateOrder(orderID : string, { clientID, merchantID, expectedCurrency, expectedIntent } : ValidateOptions) : ZalgoPromise<void> {
+    return getSupplementalOrderInfo(orderID).then(order => {
+        const cart = order.checkoutSession.cart;
 
         const intent = (cart.intent.toLowerCase() === 'sale') ? INTENT.CAPTURE : cart.intent.toLowerCase();
         const currency = cart.amounts && cart.amounts.total.currencyCode;
-
-        const expectedIntent = intent;
-        const expectedCurrency = currency;
 
         if (intent !== expectedIntent) {
             throw new Error(`Expected intent from order api call to be ${ expectedIntent }, got ${ intent }. Please ensure you are passing ${ SDK_QUERY_KEYS.INTENT }=${ intent } to the sdk`);
@@ -125,5 +109,8 @@ export function validateOrder(orderID : string, { clientID, merchantID } : { cli
         if (xpropMerchantID && xpropMerchantID.length > 0 && !isValidMerchants(window.xprops.merchantID, payees)) {
             throw new Error(`Payee passed in transaction does not match expected merchant id: ${ window.xprops.merchantID }`);
         }
+    }).catch(err => {
+        getLogger().warn('order_validation_error', { err: stringifyError(err) }).flush();
+        throw err;
     });
 }

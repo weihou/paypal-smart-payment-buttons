@@ -2,20 +2,21 @@
 
 import type { CrossDomainWindowType } from 'cross-domain-utils/src';
 import { ZalgoPromise } from 'zalgo-promise/src';
+import { FUNDING } from '@paypal/sdk-constants/src';
 
 import type { ThreeDomainSecureFlowType } from '../types';
-import type { ButtonProps, Components } from '../button/props';
 import type { CreateOrder } from '../props';
-import { validatePaymentMethod, type ValidatePaymentMethodResponse } from '../api';
+import { validatePaymentMethod, type ValidatePaymentMethodResponse, getSupplementalOrderInfo } from '../api';
 import { TARGET_ELEMENT } from '../constants';
 
-import type { PaymentFlow, PaymentFlowInstance, Payment } from './types';
+import type { PaymentFlow, PaymentFlowInstance, IsEligibleOptions, IsPaymentEligibleOptions, InitOptions } from './types';
+import { checkout } from './checkout';
 
 function setupVaultCapture() {
     // pass
 }
 
-function isVaultCaptureEligible({ props } : { props : ButtonProps }) : boolean {
+function isVaultCaptureEligible({ props } : IsEligibleOptions) : boolean {
     const { onShippingChange } = props;
 
     if (onShippingChange) {
@@ -25,7 +26,7 @@ function isVaultCaptureEligible({ props } : { props : ButtonProps }) : boolean {
     return true;
 }
 
-function isVaultCapturePaymentEligible({ payment } : { payment : Payment }) : boolean {
+function isVaultCapturePaymentEligible({ payment } : IsPaymentEligibleOptions) : boolean {
     const { win, paymentMethodID } = payment || {};
 
     if (win) {
@@ -80,11 +81,11 @@ function handleValidateResponse({ ThreeDomainSecure, status, body, createOrder, 
     });
 }
 
-function initVaultCapture({ props, components, payment } : { props : ButtonProps, components : Components, payment : Payment }) : PaymentFlowInstance {
+function initVaultCapture({ props, components, payment, serviceData, config } : InitOptions) : PaymentFlowInstance {
     const { createOrder, onApprove, clientAccessToken,
         enableThreeDomainSecure, buttonSessionID, partnerAttributionID, getParent } = props;
     const { ThreeDomainSecure } = components;
-    const { paymentMethodID } = payment;
+    const { fundingSource, paymentMethodID } = payment;
 
     if (!paymentMethodID) {
         throw new Error(`Payment method id required for vault capture`);
@@ -100,16 +101,48 @@ function initVaultCapture({ props, components, payment } : { props : ButtonProps
         });
     };
 
+    const fallbackToWebcheckout = () => {
+        return checkout.init({ props, components, serviceData, payment: { ...payment, isClick: false }, config }).start();
+    };
+
+    const shippingRequired = (orderID) => {
+        return getSupplementalOrderInfo(orderID).then(order => {
+            const { flags: { isShippingAddressRequired }, cart: { shippingAddress } } = order.checkoutSession;
+
+            if (!isShippingAddressRequired) {
+                return false;
+            }
+
+            if (shippingAddress && shippingAddress.isFullAddress) {
+                return false;
+            }
+
+            return true;
+        });
+    };
+
     const start = () => {
         return ZalgoPromise.try(() => {
             return createOrder();
-        }).then((orderID) => {
-            return validatePaymentMethod({ clientAccessToken, orderID, paymentMethodID, enableThreeDomainSecure, buttonSessionID, partnerAttributionID });
-        }).then(({ status, body }) => {
-            return handleValidateResponse({ ThreeDomainSecure, status, body, createOrder, getParent });
-        }).then(() => {
-            // $FlowFixMe
-            return onApprove({}, { restart });
+        }).then(orderID => {
+            return ZalgoPromise.hash({
+                validate:        validatePaymentMethod({ clientAccessToken, orderID, paymentMethodID, enableThreeDomainSecure, buttonSessionID, partnerAttributionID }),
+                requireShipping: shippingRequired(orderID)
+            });
+        }).then(({ validate, requireShipping }) => {
+            if (requireShipping) {
+                if (fundingSource !== FUNDING.PAYPAL) {
+                    throw new Error(`Shipping address requested for ${ fundingSource } payment`);
+                }
+
+                return fallbackToWebcheckout();
+            }
+
+            const { status, body } = validate;
+            return handleValidateResponse({ ThreeDomainSecure, status, body, createOrder, getParent }).then(() => {
+                // $FlowFixMe
+                return onApprove({}, { restart });
+            });
         });
     };
 

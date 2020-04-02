@@ -21,17 +21,17 @@ const PAYMENT_FLOWS : $ReadOnlyArray<PaymentFlow> = [
     honey
 ];
 
-export function setupPaymentFlows({ props, config, serviceData, components } : { props : ButtonProps, config : Config, serviceData : ServiceData, components : Components }) : ZalgoPromise<void> {
+export function setupPaymentFlows({ props, config, serviceData, components } : {| props : ButtonProps, config : Config, serviceData : ServiceData, components : Components |}) : ZalgoPromise<void> {
     return ZalgoPromise.all(PAYMENT_FLOWS.map(flow => {
-        return flow.isEligible({ props, config, serviceData, components })
+        return flow.isEligible({ props, config, serviceData })
             ? flow.setup({ props, config, serviceData, components })
             : null;
     })).then(noop);
 }
 
-export function getPaymentFlow({ props, payment, config, components, serviceData } : { props : ButtonProps, payment : Payment, config : Config, components : Components, serviceData : ServiceData }) : PaymentFlow {
+export function getPaymentFlow({ props, payment, config, serviceData } : {| props : ButtonProps, payment : Payment, config : Config, components : Components, serviceData : ServiceData |}) : PaymentFlow {
     for (const flow of PAYMENT_FLOWS) {
-        if (flow.isEligible({ props, config, components, serviceData }) && flow.isPaymentEligible({ props, payment, config, components, serviceData })) {
+        if (flow.isEligible({ props, config, serviceData }) && flow.isPaymentEligible({ props, payment, config, serviceData })) {
             return flow;
         }
     }
@@ -92,9 +92,14 @@ export function initiatePaymentFlow({ payment, serviceData, config, components, 
                 .then(orderID => updateButtonClientConfig({ orderID, fundingSource, inline }))
                 .catch(err => getLogger().error('update_client_config_error', { err: stringifyError(err) }));
 
+            const {
+                intent:   expectedIntent,
+                currency: expectedCurrency
+            } = props;
+
             return ZalgoPromise.try(start)
                 .then(() => createOrder())
-                .then(orderID => validateOrder(orderID, { clientID, merchantID }))
+                .then(orderID => validateOrder(orderID, { clientID, merchantID, expectedCurrency, expectedIntent }))
                 .then(() => clickPromise)
                 .catch(err => {
                     return ZalgoPromise.all([

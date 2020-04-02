@@ -2,7 +2,7 @@
 
 import type { ZalgoPromise } from 'zalgo-promise/src';
 import { FPTI_KEY, FUNDING } from '@paypal/sdk-constants/src';
-import { request, noop } from 'belter/src';
+import { request, noop, memoize } from 'belter/src';
 
 import { SMART_API_URI, ORDERS_API_URL, VALIDATE_PAYMENT_METHOD_API } from '../config';
 import { getLogger } from '../lib';
@@ -12,15 +12,15 @@ import { callSmartAPI, callGraphQL, callRestAPI } from './api';
 
 export type OrderCreateRequest = {|
     intent? : 'CAPTURE' | 'AUTHORIZE',
-        purchase_units : $ReadOnlyArray<{
-            amount : {
+        purchase_units : $ReadOnlyArray<{|
+            amount : {|
                 currency_code : string,
                 value : string
-            },
-            payee? : {
+            |},
+            payee? : {|
                 merchant_id? : string
-            }
-        }>
+            |}
+        |}>
 |};
 
 export type OrderResponse = {||};
@@ -178,7 +178,7 @@ type PaymentSource = {|
     contingencies? : $ReadOnlyArray<$Values<typeof VALIDATE_CONTINGENCIES>>
 |};
 
-export function validatePaymentMethod({ clientAccessToken, orderID, paymentMethodID, enableThreeDomainSecure, partnerAttributionID, buttonSessionID } : ValidatePaymentMethodOptions) : ZalgoPromise<{ status : number, body : ValidatePaymentMethodResponse, headers : { [string] : string } }> {
+export function validatePaymentMethod({ clientAccessToken, orderID, paymentMethodID, enableThreeDomainSecure, partnerAttributionID, buttonSessionID } : ValidatePaymentMethodOptions) : ZalgoPromise<{| status : number, body : ValidatePaymentMethodResponse, headers : { [string] : string } |}> {
     getLogger().info(`rest_api_create_order_token`);
 
     const headers : Object = {
@@ -228,7 +228,7 @@ export function subscriptionIdToCartId(subscriptionID : string) : ZalgoPromise<s
     });
 }
 
-export function enableVault({ orderID, clientAccessToken } : { orderID : string, clientAccessToken : string }) : ZalgoPromise<mixed> {
+export function enableVault({ orderID, clientAccessToken } : {| orderID : string, clientAccessToken : string |}) : ZalgoPromise<mixed> {
     return callGraphQL({
         query: `
             mutation EnableVault(
@@ -248,7 +248,7 @@ export function enableVault({ orderID, clientAccessToken } : { orderID : string,
     });
 }
 
-export function deleteVault({ paymentMethodID, clientAccessToken } : { paymentMethodID : string, clientAccessToken : string }) : ZalgoPromise<mixed> {
+export function deleteVault({ paymentMethodID, clientAccessToken } : {| paymentMethodID : string, clientAccessToken : string |}) : ZalgoPromise<mixed> {
     return callGraphQL({
         query: `
             mutation DeleteVault(
@@ -336,3 +336,62 @@ export function approveOrder({ orderID, planID, buyerAccessToken } : ApproveOrde
         };
     });
 }
+
+type SupplementalOrderInfo = {|
+    checkoutSession : {|
+        cart : {|
+            intent : string,
+            amounts? : {|
+                total : {|
+                    currencyCode : string
+                |}
+            |},
+            shippingAddress? : {|
+                isFullAddress? : boolean
+            |},
+            payees? : $ReadOnlyArray<{|
+                merchantId? : string,
+                email? : {|
+                    stringValue? : string
+                |}
+            |}>
+        |},
+        flags : {|
+            isShippingAddressRequired? : boolean
+        |}
+    |}
+|};
+
+export const getSupplementalOrderInfo = memoize((orderID : string) : ZalgoPromise<SupplementalOrderInfo> => {
+    return callGraphQL({
+        query: `
+            query GetCheckoutDetails($orderID: String!) {
+                checkoutSession(token: $orderID) {
+                    cart {
+                        intent
+                        amounts {
+                            total {
+                                currencyCode
+                            }
+                        }
+                        shippingAddress {
+                            isFullAddress
+                        }
+                        payees {
+                            merchant_id
+                            email {
+                                stringValue
+                            }
+                        }
+                    }
+                    flags {
+                        hideShipping
+                        isShippingAddressRequired
+                        isChangeShippingAddressAllowed
+                    }
+                }
+            }
+        `,
+        variables: { orderID }
+    });
+});

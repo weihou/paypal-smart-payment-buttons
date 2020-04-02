@@ -170,7 +170,7 @@ setupMocks();
 patchXmlHttpRequest();
 patchWebSocket();
 
-export function mockFunction<T, A>(obj : mixed, prop : string, mock : ({ args : $ReadOnlyArray<A>, original : (...args: $ReadOnlyArray<A>) => T }) => T) : { cancel : () => void } {
+export function mockFunction<T, A>(obj : mixed, prop : string, mock : ({| args : $ReadOnlyArray<A>, original : (...args: $ReadOnlyArray<A>) => T |}) => T) : {| cancel : () => void |} {
     // $FlowFixMe
     const original = obj[prop];
     // $FlowFixMe
@@ -185,11 +185,8 @@ export function mockFunction<T, A>(obj : mixed, prop : string, mock : ({ args : 
     };
 }
 
-export async function clickButton(fundingSource? : string = FUNDING.PAYPAL, card? : string = CARD.VISA) : ZalgoPromise<void> {
-    let selector = `button[data-funding-source=${ fundingSource }]`;
-    if (fundingSource === FUNDING.CARD) {
-        selector = `${ selector }[data-card=${ card }]`;
-    }
+export async function clickButton(fundingSource? : string = FUNDING.PAYPAL) : ZalgoPromise<void> {
+    const selector = `button[data-funding-source=${ fundingSource }]`;
     const button = window.document.querySelector(selector);
     button.click();
     await button.payPromise;
@@ -215,14 +212,6 @@ export function createButtonHTML(fundingEligibility? : Object = DEFAULT_FUNDING_
             continue;
         }
 
-        buttons.push(`<button data-funding-source="${ fundingSource }"></div>`);
-
-        if (fundingConfig.vaultedInstruments) {
-            for (const vaultedInstrument of fundingConfig.vaultedInstruments) {
-                buttons.push(`<button data-funding-source="${ fundingSource }" data-payment-method-id="${ vaultedInstrument.id }"></div>`);
-            }
-        }
-
         if (fundingSource === FUNDING.CARD) {
             for (const card of values(CARD)) {
                 const cardConfig = fundingConfig.vendors[card];
@@ -230,14 +219,20 @@ export function createButtonHTML(fundingEligibility? : Object = DEFAULT_FUNDING_
                 if (!cardConfig || !cardConfig.eligible) {
                     continue;
                 }
-
-                buttons.push(`<button data-funding-source="${ fundingSource }" data-card="${ card }"></div>`);
-
-                if (cardConfig.vaultedInstruments) {
-                    for (const vaultedInstrument of cardConfig.vaultedInstruments) {
-                        buttons.push(`<button data-funding-source="${ fundingSource }" data-card="${ card }" data-payment-method-id="${ vaultedInstrument.id }"></div>`);
-                    }
+                
+                if (cardConfig.vaultedInstruments && cardConfig.vaultedInstruments.length) {
+                    const vaultedInstrument = cardConfig.vaultedInstruments[0];
+                    buttons.push(`<button data-funding-source="${ fundingSource }" data-payment-method-id="${ vaultedInstrument.id }"></div>`);
+                } else {
+                    buttons.push(`<button data-funding-source="${ fundingSource }"></div>`);
                 }
+            }
+        } else {
+            if (fundingConfig.vaultedInstruments && fundingConfig.vaultedInstruments.length) {
+                const vaultedInstrument = fundingConfig.vaultedInstruments[0];
+                buttons.push(`<button data-funding-source="${ fundingSource }" data-payment-method-id="${ vaultedInstrument.id }"></div>`);
+            } else {
+                buttons.push(`<button data-funding-source="${ fundingSource }"></div>`);
             }
         }
     }
@@ -432,6 +427,10 @@ export function getGraphQLApiMock(options : Object = {}) : MockEndpoint {
                 }
             }
 
+            if (options.data) {
+                return options.data;
+            }
+
             if (data.query.includes('query GetCheckoutDetails')) {
                 return {
                     data: {
@@ -445,7 +444,10 @@ export function getGraphQLApiMock(options : Object = {}) : MockEndpoint {
                                 },
                                 payees: [
                                     {
-                                        merchant_id: 'XYZ12345'
+                                        merchantId: 'XYZ12345',
+                                        email:       {
+                                            stringValue: 'xyz-us-b1@paypal.com'
+                                        }
                                     }
                                 ]
                             }
@@ -532,10 +534,10 @@ type NativeMockWebSocket = {|
     onApprove : () => void,
     onCancel : () => void,
     onError : () => void,
-    fallback : ({ buyerAccessToken : string }) => void
+    fallback : ({| buyerAccessToken : string |}) => void
 |};
 
-export function getNativeWebSocketMock({ getSessionUID } : { getSessionUID : () => ?string }) : NativeMockWebSocket {
+export function getNativeWebSocketMock({ getSessionUID } : {| getSessionUID : () => ?string |}) : NativeMockWebSocket {
     let props;
 
     let getPropsRequestID;
@@ -674,7 +676,7 @@ export function getNativeWebSocketMock({ getSessionUID } : { getSessionUID : () 
 
 const mockScripts = {};
 
-export function mockScript({ src, expect = true, block = true } : { src : string, expect? : boolean, block? : boolean }) : { done : () => void, await : () => ZalgoPromise<HTMLElement> } {
+export function mockScript({ src, expect = true, block = true } : {| src : string, expect? : boolean, block? : boolean |}) : {| done : () => void, await : () => ZalgoPromise<HTMLElement> |} {
     const promise = new ZalgoPromise();
     mockScripts[src] = { expect, block, promise };
 
@@ -730,7 +732,7 @@ document.createElement = function mockCreateElement(name : string) : HTMLElement
     return el;
 };
 
-export function mockFirebaseScripts() : { done : () => void, await : ZalgoPromise<$ReadOnlyArray<HTMLElement>> } {
+export function mockFirebaseScripts() : {| done : () => void, await : ZalgoPromise<$ReadOnlyArray<HTMLElement>> |} {
     loadFirebaseSDK.reset();
 
     const mockfirebaseApp = mockScript({
@@ -789,7 +791,7 @@ type MockFirebase = {|
 
 let firebaseOffline = false;
 
-function mockFirebase({ handler } : { handler : ({ data : Object }) => void }) : MockFirebase {
+function mockFirebase({ handler } : {| handler : ({| data : Object |}) => void |}) : MockFirebase {
     const firebaseScriptsMock = mockFirebaseScripts();
 
     let hasCalls = false;
@@ -883,7 +885,7 @@ function mockFirebase({ handler } : { handler : ({ data : Object }) => void }) :
     return { send, expect };
 }
 
-export function getNativeFirebaseMock({ getSessionUID, extraHandler } : { getSessionUID : () => string, extraHandler? : Function }) : NativeMockWebSocket {
+export function getNativeFirebaseMock({ getSessionUID, extraHandler } : {| getSessionUID : () => string, extraHandler? : Function |}) : NativeMockWebSocket {
     let props;
 
     let getPropsRequestID;
@@ -1104,7 +1106,7 @@ export function getNativeFirebaseMock({ getSessionUID, extraHandler } : { getSes
         waitingForResponse.push(onErrorRequestID);
     };
 
-    const fallback = ({ buyerAccessToken } : { buyerAccessToken : string }) => {
+    const fallback = ({ buyerAccessToken } : {| buyerAccessToken : string |}) => {
         fallbackRequestID = `${ uniqueID() }_fallback`;
 
         send(`users/${ getSessionUID() }/messages/${ uniqueID() }`, JSON.stringify({
@@ -1273,8 +1275,13 @@ type MockWindow = {|
     expectClose : () => void,
     done : () => void
 |};
+
+const getDefaultMockWindowOptions = () : MockWindowOptions => {
+    // $FlowFixMe
+    return {};
+};
         
-export function getMockWindowOpen({ expectedUrl, times = 1, appSwitch = false, expectClose = false, onOpen = noop, expectedQuery = [], expectImmediateUrl = true } : MockWindowOptions) : MockWindow {
+export function getMockWindowOpen({ expectedUrl, times = 1, appSwitch = false, expectClose = false, onOpen = noop, expectedQuery = [], expectImmediateUrl = true } : MockWindowOptions = getDefaultMockWindowOptions()) : MockWindow {
 
     let windowOpenedTimes = 0;
 
@@ -1323,7 +1330,9 @@ export function getMockWindowOpen({ expectedUrl, times = 1, appSwitch = false, e
         const newWin : CrossDomainWindowType = {
             get location() : {||} {
                 // $FlowFixMe
-                return {};
+                return {
+                    protocol: 'about:'
+                };
             },
             set location(loc : string) {
                 ZalgoPromise.delay(10).then(() => {
@@ -1352,6 +1361,27 @@ export function getMockWindowOpen({ expectedUrl, times = 1, appSwitch = false, e
             self:        null,
             postMessage: noop
         };
+
+        const mockElement = (tagName = 'div') => {
+            return {
+                tagName,
+                appendChild:      noop,
+                removeChild:      noop,
+                setAttribute:     noop,
+                querySelector:    noop,
+                querySelectorAll: () => [],
+                children:         []
+            };
+        };
+
+        if (!url) {
+            // $FlowFixMe
+            newWin.document = {
+                createElement:   mockElement,
+                createTextNode:  mockElement,
+                documentElement: mockElement()
+            };
+        }
 
         newWin.parent = newWin.top = newWin.self = newWin;
         win = newWin;
@@ -1404,4 +1434,8 @@ export function getMockWindowOpen({ expectedUrl, times = 1, appSwitch = false, e
         expectClose: doExpectClose,
         done
     };
+}
+
+export function generateOrderID() : string {
+    return uniqueID().slice(0, 8);
 }

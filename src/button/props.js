@@ -98,6 +98,7 @@ export type ButtonProps = {|
     vault : boolean,
     commit : boolean,
     currency : $Values<typeof CURRENCY>,
+    intent : $Values<typeof INTENT>,
 
     clientAccessToken : ?string,
 
@@ -128,7 +129,7 @@ export type ButtonProps = {|
     onShippingChange : ?OnShippingChange
 |};
 
-export function getProps({ facilitatorAccessToken } : { facilitatorAccessToken : string }) : ButtonProps {
+export function getProps({ facilitatorAccessToken } : {| facilitatorAccessToken : string |}) : ButtonProps {
 
     const xprops : ButtonXProps = window.xprops;
 
@@ -198,7 +199,7 @@ export function getProps({ facilitatorAccessToken } : { facilitatorAccessToken :
     const createOrder = getCreateOrder({ createOrder: xprops.createOrder, currency, intent, merchantID, partnerAttributionID }, { facilitatorAccessToken, createBillingAgreement, createSubscription });
 
     const onApprove = getOnApprove({ onApprove: xprops.onApprove, intent, onError, partnerAttributionID, upgradeLSAT }, { facilitatorAccessToken, createOrder });
-    const onCancel = getOnCancel({ onCancel: xprops.onCancel, onError }, { facilitatorAccessToken, createOrder });
+    const onCancel = getOnCancel({ onCancel: xprops.onCancel, onError }, { createOrder });
     const onShippingChange = getOnShippingChange({ onShippingChange: xprops.onShippingChange, partnerAttributionID }, { facilitatorAccessToken, createOrder });
 
     return {
@@ -219,6 +220,7 @@ export function getProps({ facilitatorAccessToken } : { facilitatorAccessToken :
         merchantDomain,
         platform,
         currency,
+        intent,
 
         getPopupBridge,
         getPrerenderDetails,
@@ -262,7 +264,7 @@ export type Config = {|
     firebase : ?FirebaseConfig
 |};
 
-export function getConfig({ serverCSPNonce, firebaseConfig } : { serverCSPNonce : ?string, firebaseConfig : ?FirebaseConfig }) : Config {
+export function getConfig({ serverCSPNonce, firebaseConfig } : {| serverCSPNonce : ?string, firebaseConfig : ?FirebaseConfig |}) : Config {
     const cspNonce = serverCSPNonce || getNonce();
     const { version } = paypal;
     
