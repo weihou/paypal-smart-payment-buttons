@@ -1,13 +1,13 @@
 /* @flow */
 
 import { ZalgoPromise } from 'zalgo-promise/src';
-import { INTENT, SDK_QUERY_KEYS, FUNDING, CURRENCY } from '@paypal/sdk-constants/src';
+import { INTENT, SDK_QUERY_KEYS, FUNDING, CURRENCY, ENV } from '@paypal/sdk-constants/src';
 import { stringifyError } from 'belter/src';
 
 import { INTEGRATION_ARTIFACT, USER_EXPERIENCE_FLOW, PRODUCT_FLOW } from '../constants';
 import { updateClientConfig, getSupplementalOrderInfo } from '../api';
 import { getLogger } from '../lib';
-import { CLIENT_ID_PAYEE_NO_MATCH } from '../config';
+import { CLIENT_ID_PAYEE_NO_MATCH, ORDER_VALIDATION_WHITELIST, SANDBOX_ORDER_VALIDATION_WHITELIST } from '../config';
 
 export function updateButtonClientConfig({ orderID, fundingSource, inline = false } : {| orderID : string, fundingSource : $Values<typeof FUNDING>, inline : boolean | void |}) : ZalgoPromise<void> {
     return updateClientConfig({
@@ -20,6 +20,7 @@ export function updateButtonClientConfig({ orderID, fundingSource, inline = fals
 }
 
 type ValidateOptions = {|
+    env : $Values<typeof ENV>,
     clientID : ?string,
     merchantID : $ReadOnlyArray<string>,
     expectedIntent : $Values<typeof INTENT>,
@@ -72,7 +73,7 @@ const isValidMerchants = (merchantIdsOrEmails, payees) => {
     return foundPayee;
 };
 
-export function validateOrder(orderID : string, { clientID, merchantID, expectedCurrency, expectedIntent } : ValidateOptions) : ZalgoPromise<void> {
+export function validateOrder(orderID : string, { env, clientID, merchantID, expectedCurrency, expectedIntent } : ValidateOptions) : ZalgoPromise<void> {
     return getSupplementalOrderInfo(orderID).then(order => {
         const cart = order.checkoutSession.cart;
 
@@ -80,11 +81,11 @@ export function validateOrder(orderID : string, { clientID, merchantID, expected
         const currency = cart.amounts && cart.amounts.total.currencyCode;
 
         if (intent !== expectedIntent) {
-            throw new Error(`Expected intent from order api call to be ${ expectedIntent }, got ${ intent }. Please ensure you are passing ${ SDK_QUERY_KEYS.INTENT }=${ intent } to the sdk`);
+            throw new Error(`Expected intent from order api call to be ${ expectedIntent }, got ${ intent }. Please ensure you are passing ${ SDK_QUERY_KEYS.INTENT }=${ intent } to the sdk url. https://developer.paypal.com/docs/checkout/reference/customize-sdk/`);
         }
 
         if (currency && currency !== expectedCurrency) {
-            throw new Error(`Expected currency from order api call to be ${ expectedCurrency }, got ${ currency }. Please ensure you are passing ${ SDK_QUERY_KEYS.CURRENCY }=${ currency } to the sdk`);
+            throw new Error(`Expected currency from order api call to be ${ expectedCurrency }, got ${ currency }. Please ensure you are passing ${ SDK_QUERY_KEYS.CURRENCY }=${ currency } to the sdk url. https://developer.paypal.com/docs/checkout/reference/customize-sdk/`);
         }
 
         const payees = cart.payees;
@@ -110,7 +111,32 @@ export function validateOrder(orderID : string, { clientID, merchantID, expected
             throw new Error(`Payee passed in transaction does not match expected merchant id: ${ window.xprops.merchantID }`);
         }
     }).catch(err => {
-        getLogger().warn('order_validation_error', { err: stringifyError(err) }).flush();
+        if (env === ENV.SANDBOX) {
+            if (SANDBOX_ORDER_VALIDATION_WHITELIST.indexOf(clientID) !== -1) {
+                getLogger().warn(`sandbox_order_validation_error_sandbox_whitelist`, { err: stringifyError(err) }).flush();
+                getLogger().warn(`sandbox_order_validation_error_sandbox_whitelist_${ clientID || 'unknown' }`, { err: stringifyError(err) }).flush();
+                return;
+            }
+
+            if (clientID && ORDER_VALIDATION_WHITELIST.indexOf(clientID) !== -1) {
+                getLogger().warn(`sandbox_order_validation_error_whitelist`, { err: stringifyError(err) }).flush();
+                getLogger().warn(`sandbox_order_validation_error_whitelist_${ clientID || 'unknown' }`, { err: stringifyError(err) }).flush();
+            }
+
+            getLogger().warn('sandbox_order_validation_error', { err: stringifyError(err) });
+            getLogger().warn(`sandbox_order_validation_error_${ clientID || 'unknown' }`, { err: stringifyError(err) }).flush();
+            throw err;
+        }
+
+
+        if (clientID && ORDER_VALIDATION_WHITELIST.indexOf(clientID) !== -1) {
+            getLogger().warn(`order_validation_error_whitelist`, { err: stringifyError(err) }).flush();
+            getLogger().warn(`order_validation_error_whitelist_${ clientID || 'unknown' }`, { err: stringifyError(err) }).flush();
+            return;
+        }
+
+        getLogger().warn('order_validation_error', { err: stringifyError(err) });
+        getLogger().warn(`order_validation_error_${  clientID || 'unknown' }`, { err: stringifyError(err) }).flush();
         throw err;
     });
 }
