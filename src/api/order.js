@@ -378,7 +378,7 @@ export const getSupplementalOrderInfo = memoize((orderID : string) : ZalgoPromis
                             isFullAddress
                         }
                         payees {
-                            merchant_id
+                            merchantId
                             email {
                                 stringValue
                             }
