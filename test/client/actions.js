@@ -231,28 +231,45 @@ describe('actions cases', () => {
             window.xprops.intent = INTENT.AUTHORIZE;
 
             const gqlMock = getGraphQLApiMock({
-                data: {
-                    data: {
-                        checkoutSession: {
-                            cart: {
-                                intent:  INTENT.AUTHORIZE,
-                                amounts: {
-                                    total: {
-                                        currencyCode: 'USD'
-                                    }
-                                },
-                                payees: [
-                                    {
-                                        merchantId: 'XYZ12345',
-                                        email:      {
-                                            stringValue: 'xyz-us-b1@paypal.com'
-                                        }
-                                    }
-                                ]
-                            }
+                extraHandler: expect('GetCheckoutDetailsGQLCall', ({ data }) => {
+                    if (data.query.includes('query GetCheckoutDetails')) {
+                        if (!data.query.includes('payees')) {
+                            throw new Error(`Expected query GetCheckoutDetails to have payees`);
+                        }
+                        if (!data.query.includes('merchantId')) {
+                            throw new Error(`Expected query GetCheckoutDetails to have payee merchantId`);
+                        }
+                        if (!data.query.includes('email')) {
+                            throw new Error(`Expected query GetCheckoutDetails to have payee email`);
+                        }
+                        if (!data.variables.orderID) {
+                            throw new Error(`Expected orderID to be passed`);
                         }
                     }
-                }
+                    
+                    return {
+                        data: {
+                            checkoutSession: {
+                                cart: {
+                                    intent:  INTENT.AUTHORIZE,
+                                    amounts: {
+                                        total: {
+                                            currencyCode: 'USD'
+                                        }
+                                    },
+                                    payees: [
+                                        {
+                                            merchantId: 'XYZ12345',
+                                            email:      {
+                                                stringValue: 'xyz-us-b1@paypal.com'
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    };
+                })
             }).expectCalls();
 
             window.xprops.createOrder = mockAsyncProp(expect('createOrder', async () => {
