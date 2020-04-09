@@ -67,9 +67,8 @@ const isValidMerchants = (merchantIdsOrEmails, payees) => {
     // now check payees
     // each payer should either has merchant_id in merchantIds or has email in merchantEmails
     const foundPayee = payees.every(payee => {
-        return (merchantIds.includes(payee.merchantId) || merchantEmails.includes(payee.email && payee.email.stringValue));
+        return (merchantIds.includes(payee.merchantId) || merchantEmails.includes(payee.email && payee.email.stringValue && payee.email.stringValue.toLowerCase()));
     });
-
     return foundPayee;
 };
 
