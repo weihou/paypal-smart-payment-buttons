@@ -26,6 +26,7 @@ export const DATA_ATTRIBUTES = {
     FUNDING_SOURCE:    'data-funding-source',
     CARD:              'data-card',
     PAYMENT_METHOD_ID: 'data-payment-method-id',
+    INSTRUMENT_ID:     'data-instrument-id',
     MENU:              'data-menu',
     NONCE:             'data-nonce'
 };
@@ -106,8 +107,10 @@ export const FPTI_BUTTON_TYPE = {
 };
 
 export const FTPI_CUSTOM_KEY = {
-    HONEY_DEVICE_ID:  ('honey_device_id' : 'honey_device_id'),
-    HONEY_SESSION_ID: ('honey_session_id' : 'honey_session_id')
+    HONEY_DEVICE_ID:       ('honey_device_id' : 'honey_device_id'),
+    HONEY_SESSION_ID:      ('honey_session_id' : 'honey_session_id'),
+    INTEGRATION_ISSUE:     ('integration_issue' : 'integration_issue'),
+    INTEGRATION_WHITELIST: ('whitelist' : 'whitelist')
 };
 
 export const FTPI_BUTTON_KEY = {
