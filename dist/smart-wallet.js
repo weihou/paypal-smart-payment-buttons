@@ -198,13 +198,13 @@
             return insertCss(content, options);
         };
     }, function(module, exports, __webpack_require__) {
-        (exports = __webpack_require__(0)(!1)).push([ module.i, ".wallet-item[data-v-fdd787a1]{cursor:pointer;width:100%;display:flex;justify-content:flex-start;align-items:center;padding:0 20px;box-sizing:border-box;transition:background-color 0.3s ease-in-out;height:60px}@media only screen and (max-width: 600px){.wallet-item[data-v-fdd787a1]{height:50px}}.wallet-item .icon[data-v-fdd787a1]{display:inline-block;vertical-align:top;text-align:center;width:50px;margin-right:20px}.wallet-item .icon img[data-v-fdd787a1]{max-height:90%;max-width:90%}.wallet-item .description[data-v-fdd787a1]{display:inline-block;vertical-align:top}.wallet-item .description .name[data-v-fdd787a1]{font-size:16px;margin-bottom:5px}@media only screen and (max-width: 600px){.wallet-item .description .name[data-v-fdd787a1]{font-size:13px}}.wallet-item .description .details[data-v-fdd787a1]{color:#6c7378;font-size:14px}@media only screen and (max-width: 600px){.wallet-item .description .details[data-v-fdd787a1]{font-size:12px}}.wallet-item .preferred[data-v-fdd787a1]{background-color:#eaf7e9;color:#2d542b;font-size:10px;padding:2px 5px;border-radius:3px;margin:0 5px}.wallet-item[data-v-fdd787a1]:hover{background-color:#eee}\n", "" ]);
+        (exports = __webpack_require__(0)(!1)).push([ module.i, ".wallet-item[data-v-d2ff3bcf]{cursor:pointer;width:100%;display:flex;justify-content:flex-start;align-items:center;padding:0 20px;box-sizing:border-box;transition:background-color 0.3s ease-in-out;height:60px}@media only screen and (max-width: 600px){.wallet-item[data-v-d2ff3bcf]{height:50px}}.wallet-item .icon[data-v-d2ff3bcf]{display:inline-block;vertical-align:top;text-align:center;width:50px;margin-right:20px}.wallet-item .icon img[data-v-d2ff3bcf]{max-height:90%;max-width:90%}.wallet-item .description[data-v-d2ff3bcf]{display:inline-block;vertical-align:top}.wallet-item .description .name[data-v-d2ff3bcf]{font-size:16px;margin-bottom:5px}@media only screen and (max-width: 600px){.wallet-item .description .name[data-v-d2ff3bcf]{font-size:13px}}.wallet-item .description .details[data-v-d2ff3bcf]{color:#6c7378;font-size:14px}@media only screen and (max-width: 600px){.wallet-item .description .details[data-v-d2ff3bcf]{font-size:12px}}.wallet-item .preferred[data-v-d2ff3bcf]{background-color:#eaf7e9;color:#2d542b;font-size:10px;padding:2px 5px;border-radius:3px;margin:0 5px}.wallet-item[data-v-d2ff3bcf]:hover{background-color:#eee}\n", "" ]);
         module.exports = exports;
     }, function(module, exports, __webpack_require__) {
         (exports = __webpack_require__(0)(!1)).push([ module.i, "", "" ]);
         module.exports = exports;
     }, function(module, exports, __webpack_require__) {
-        (exports = __webpack_require__(0)(!1)).push([ module.i, ".add-card-button[data-v-d2ff3bcf]{padding:20px}.add-card-button a[data-v-d2ff3bcf]{color:#007ab7;font-weight:400;font-size:16px;text-decoration:none}.add-card-button a[data-v-d2ff3bcf]:hover{text-decoration:underline}\n", "" ]);
+        (exports = __webpack_require__(0)(!1)).push([ module.i, ".add-card-button[data-v-fdd787a1]{padding:20px}.add-card-button a[data-v-fdd787a1]{color:#007ab7;font-weight:400;font-size:16px;text-decoration:none}.add-card-button a[data-v-fdd787a1]:hover{text-decoration:underline}\n", "" ]);
         module.exports = exports;
     }, function(module, exports, __webpack_require__) {
         (exports = __webpack_require__(0)(!1)).push([ module.i, "html,body{margin:0;width:100%;overflow:hidden;font-family:Helvetica Neue, HelveticaNeue, HelveticaNeue-Light, Helvetica Neue Light, helvetica, arial, sans-serif}*{box-sizing:border-box}.flex-spacer{flex:1}\n", "" ]);
@@ -218,23 +218,23 @@
         __webpack_require__.d(__webpack_exports__, "renderWallet", (function() {
             return renderWallet;
         }));
-        var preact_module_n, preact_module_u, preact_module_i, preact_module_t, preact_module_o, preact_module_r, preact_module_f, e = {}, c = [], s = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord/i;
+        var preact_module_n, preact_module_u, preact_module_i, preact_module_t, preact_module_r, preact_module_o, f, e = {}, c = [], s = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord/i;
         function a(n, l) {
             for (var u in l) n[u] = l[u];
             return n;
         }
-        function v(n) {
+        function preact_module_v(n) {
             var l = n.parentNode;
             l && l.removeChild(n);
         }
-        function preact_module_h(n, l, u) {
-            var i, t = arguments, o = {};
-            for (i in l) "key" !== i && "ref" !== i && (o[i] = l[i]);
+        function h(n, l, u) {
+            var i, t = arguments, r = {};
+            for (i in l) "key" !== i && "ref" !== i && (r[i] = l[i]);
             if (arguments.length > 3) for (u = [ u ], i = 3; i < arguments.length; i++) u.push(t[i]);
-            if (null != u && (o.children = u), "function" == typeof n && null != n.defaultProps) for (i in n.defaultProps) void 0 === o[i] && (o[i] = n.defaultProps[i]);
-            return p(n, o, l && l.key, l && l.ref);
+            if (null != u && (r.children = u), "function" == typeof n && null != n.defaultProps) for (i in n.defaultProps) void 0 === r[i] && (r[i] = n.defaultProps[i]);
+            return preact_module_p(n, r, l && l.key, l && l.ref, null);
         }
-        function p(l, u, i, t) {
+        function preact_module_p(l, u, i, t, r) {
             var o = {
                 type: l,
                 props: u,
@@ -246,9 +246,11 @@
                 __e: null,
                 __d: void 0,
                 __c: null,
-                constructor: void 0
+                constructor: void 0,
+                __v: r
             };
-            return preact_module_n.vnode && preact_module_n.vnode(o), o;
+            return null == r && (o.__v = o), preact_module_n.vnode && preact_module_n.vnode(o), 
+            o;
         }
         function preact_module_d(n) {
             return n.children;
@@ -261,44 +263,48 @@
             for (var u; l < n.__k.length; l++) if (null != (u = n.__k[l]) && null != u.__e) return u.__e;
             return "function" == typeof n.type ? preact_module_w(n) : null;
         }
-        function g(n) {
+        function preact_module_k(n) {
             var l, u;
             if (null != (n = n.__) && null != n.__c) {
                 for (n.__e = n.__c.base = null, l = 0; l < n.__k.length; l++) if (null != (u = n.__k[l]) && null != u.__e) {
                     n.__e = n.__c.base = u.__e;
                     break;
                 }
-                return g(n);
+                return preact_module_k(n);
             }
         }
-        function preact_module_k(l) {
-            (!l.__d && (l.__d = !0) && preact_module_u.push(l) && !preact_module_i++ || preact_module_o !== preact_module_n.debounceRendering) && ((preact_module_o = preact_module_n.debounceRendering) || preact_module_t)(preact_module_);
+        function g(l) {
+            (!l.__d && (l.__d = !0) && preact_module_u.push(l) && !preact_module_i++ || preact_module_r !== preact_module_n.debounceRendering) && ((preact_module_r = preact_module_n.debounceRendering) || preact_module_t)(_);
         }
-        function preact_module_() {
+        function _() {
             for (var n; preact_module_i = preact_module_u.length; ) n = preact_module_u.sort((function(n, l) {
                 return n.__v.__b - l.__v.__b;
             })), preact_module_u = [], n.some((function(n) {
-                var l, u, i, t, o, r;
-                n.__d && (o = (t = (l = n).__v).__e, (r = l.__P) && (u = [], i = preact_module_A(r, t, a({}, t), l.__n, void 0 !== r.ownerSVGElement, null, u, null == o ? preact_module_w(t) : o), 
-                preact_module_T(u, t), i != o && g(t)));
+                var l, u, i, t, r, o, f;
+                n.__d && (o = (r = (l = n).__v).__e, (f = l.__P) && (u = [], (i = a({}, r)).__v = i, 
+                t = preact_module_A(f, r, i, l.__n, void 0 !== f.ownerSVGElement, null, u, null == o ? preact_module_w(r) : o), 
+                preact_module_T(u, r), t != o && preact_module_k(r)));
             }));
         }
-        function preact_module_b(n, l, u, i, t, o, r, f, s) {
-            var a, h, p, y, d, m, g, k = u && u.__k || c, _ = k.length;
-            if (f == e && (f = null != o ? o[0] : _ ? preact_module_w(u, 0) : null), a = 0, 
-            l.__k = preact_module_x(l.__k, (function(u) {
+        function preact_module_b(n, l, u, i, t, r, o, f, s) {
+            var a, h, p, y, d, m, k, g = u && u.__k || c, _ = g.length;
+            if (f == e && (f = null != r ? r[0] : _ ? preact_module_w(u, 0) : null), a = 0, 
+            l.__k = function preact_module_x(n, l, u) {
+                if (null == u && (u = []), null == n || "boolean" == typeof n) l && u.push(l(null)); else if (Array.isArray(n)) for (var i = 0; i < n.length; i++) preact_module_x(n[i], l, u); else u.push(l ? l("string" == typeof n || "number" == typeof n ? preact_module_p(null, n, null, null, n) : null != n.__e || null != n.__c ? preact_module_p(n.type, n.props, n.key, null, n.__v) : n) : n);
+                return u;
+            }(l.__k, (function(u) {
                 if (null != u) {
-                    if (u.__ = l, u.__b = l.__b + 1, null === (p = k[a]) || p && u.key == p.key && u.type === p.type) k[a] = void 0; else for (h = 0; h < _; h++) {
-                        if ((p = k[h]) && u.key == p.key && u.type === p.type) {
-                            k[h] = void 0;
+                    if (u.__ = l, u.__b = l.__b + 1, null === (p = g[a]) || p && u.key == p.key && u.type === p.type) g[a] = void 0; else for (h = 0; h < _; h++) {
+                        if ((p = g[h]) && u.key == p.key && u.type === p.type) {
+                            g[h] = void 0;
                             break;
                         }
                         p = null;
                     }
-                    if (y = preact_module_A(n, u, p = p || e, i, t, o, r, f, s), (h = u.ref) && p.ref != h && (g || (g = []), 
-                    p.ref && g.push(p.ref, null, u), g.push(h, u.__c || y, u)), null != y) {
+                    if (y = preact_module_A(n, u, p = p || e, i, t, r, o, f, s), (h = u.ref) && p.ref != h && (k || (k = []), 
+                    p.ref && k.push(p.ref, null, u), k.push(h, u.__c || y, u)), null != y) {
                         var c;
-                        if (null == m && (m = y), void 0 !== u.__d) c = u.__d, u.__d = void 0; else if (o == p || y != f || null == y.parentNode) {
+                        if (null == m && (m = y), void 0 !== u.__d) c = u.__d, u.__d = void 0; else if (r == p || y != f || null == y.parentNode) {
                             n: if (null == f || f.parentNode !== n) n.appendChild(y), c = null; else {
                                 for (d = f, h = 0; (d = d.nextSibling) && h < _; h += 2) if (d == y) break n;
                                 n.insertBefore(y, f), c = f;
@@ -309,62 +315,58 @@
                     } else f && p.__e == f && f.parentNode != n && (f = preact_module_w(p));
                 }
                 return a++, u;
-            })), l.__e = m, null != o && "function" != typeof l.type) for (a = o.length; a--; ) null != o[a] && v(o[a]);
-            for (a = _; a--; ) null != k[a] && preact_module_D(k[a], k[a]);
-            if (g) for (a = 0; a < g.length; a++) preact_module_j(g[a], g[++a], g[++a]);
-        }
-        function preact_module_x(n, l, u) {
-            if (null == u && (u = []), null == n || "boolean" == typeof n) l && u.push(l(null)); else if (Array.isArray(n)) for (var i = 0; i < n.length; i++) preact_module_x(n[i], l, u); else u.push(l ? l("string" == typeof n || "number" == typeof n ? p(null, n, null, null) : null != n.__e || null != n.__c ? p(n.type, n.props, n.key, null) : n) : n);
-            return u;
+            })), l.__e = m, null != r && "function" != typeof l.type) for (a = r.length; a--; ) null != r[a] && preact_module_v(r[a]);
+            for (a = _; a--; ) null != g[a] && preact_module_D(g[a], g[a]);
+            if (k) for (a = 0; a < k.length; a++) preact_module_j(k[a], k[++a], k[++a]);
         }
         function preact_module_C(n, l, u) {
             "-" === l[0] ? n.setProperty(l, u) : n[l] = "number" == typeof u && !1 === s.test(l) ? u + "px" : null == u ? "" : u;
         }
         function preact_module_N(n, l, u, i, t) {
-            var o, r, f, e, c;
+            var r, o, f, e, c;
             if (t ? "className" === l && (l = "class") : "class" === l && (l = "className"), 
-            "key" === l || "children" === l) ; else if ("style" === l) if (o = n.style, "string" == typeof u) o.cssText = u; else {
-                if ("string" == typeof i && (o.cssText = "", i = null), i) for (r in i) u && r in u || preact_module_C(o, r, "");
-                if (u) for (f in u) i && u[f] === i[f] || preact_module_C(o, f, u[f]);
-            } else "o" === l[0] && "n" === l[1] ? (e = l !== (l = l.replace(/Capture$/, "")), 
-            c = l.toLowerCase(), l = (c in n ? c : l).slice(2), u ? (i || n.addEventListener(l, preact_module_z, e), 
-            (n.l || (n.l = {}))[l] = u) : n.removeEventListener(l, preact_module_z, e)) : "list" !== l && "tagName" !== l && "form" !== l && "type" !== l && "size" !== l && !t && l in n ? n[l] = null == u ? "" : u : "function" != typeof u && "dangerouslySetInnerHTML" !== l && (l !== (l = l.replace(/^xlink:?/, "")) ? null == u || !1 === u ? n.removeAttributeNS("http://www.w3.org/1999/xlink", l.toLowerCase()) : n.setAttributeNS("http://www.w3.org/1999/xlink", l.toLowerCase(), u) : null == u || !1 === u && !/^ar/.test(l) ? n.removeAttribute(l) : n.setAttribute(l, u));
+            "style" === l) if (r = n.style, "string" == typeof u) r.cssText = u; else {
+                if ("string" == typeof i && (r.cssText = "", i = null), i) for (e in i) u && e in u || preact_module_C(r, e, "");
+                if (u) for (c in u) i && u[c] === i[c] || preact_module_C(r, c, u[c]);
+            } else "o" === l[0] && "n" === l[1] ? (o = l !== (l = l.replace(/Capture$/, "")), 
+            f = l.toLowerCase(), l = (f in n ? f : l).slice(2), u ? (i || n.addEventListener(l, preact_module_z, o), 
+            (n.l || (n.l = {}))[l] = u) : n.removeEventListener(l, preact_module_z, o)) : "list" !== l && "tagName" !== l && "form" !== l && "type" !== l && "size" !== l && !t && l in n ? n[l] = null == u ? "" : u : "function" != typeof u && "dangerouslySetInnerHTML" !== l && (l !== (l = l.replace(/^xlink:?/, "")) ? null == u || !1 === u ? n.removeAttributeNS("http://www.w3.org/1999/xlink", l.toLowerCase()) : n.setAttributeNS("http://www.w3.org/1999/xlink", l.toLowerCase(), u) : null == u || !1 === u && !/^ar/.test(l) ? n.removeAttribute(l) : n.setAttribute(l, u));
         }
         function preact_module_z(l) {
             this.l[l.type](preact_module_n.event ? preact_module_n.event(l) : l);
         }
-        function preact_module_A(l, u, i, t, o, r, f, e, c) {
-            var s, v, h, p, y, w, g, k, _, x, P = u.type;
+        function preact_module_A(l, u, i, t, r, o, f, e, c) {
+            var s, v, h, p, y, w, k, g, _, x, P = u.type;
             if (void 0 !== u.constructor) return null;
             (s = preact_module_n.__b) && s(u);
             try {
                 n: if ("function" == typeof P) {
-                    if (k = u.props, _ = (s = P.contextType) && t[s.__c], x = s ? _ ? _.props.value : s.__ : t, 
-                    i.__c ? g = (v = u.__c = i.__c).__ = v.__E : ("prototype" in P && P.prototype.render ? u.__c = v = new P(k, x) : (u.__c = v = new preact_module_m(k, x), 
-                    v.constructor = P, v.render = preact_module_E), _ && _.sub(v), v.props = k, v.state || (v.state = {}), 
+                    if (g = u.props, _ = (s = P.contextType) && t[s.__c], x = s ? _ ? _.props.value : s.__ : t, 
+                    i.__c ? k = (v = u.__c = i.__c).__ = v.__E : ("prototype" in P && P.prototype.render ? u.__c = v = new P(g, x) : (u.__c = v = new preact_module_m(g, x), 
+                    v.constructor = P, v.render = preact_module_E), _ && _.sub(v), v.props = g, v.state || (v.state = {}), 
                     v.context = x, v.__n = t, h = v.__d = !0, v.__h = []), null == v.__s && (v.__s = v.state), 
                     null != P.getDerivedStateFromProps && (v.__s == v.state && (v.__s = a({}, v.__s)), 
-                    a(v.__s, P.getDerivedStateFromProps(k, v.__s))), p = v.props, y = v.state, h) null == P.getDerivedStateFromProps && null != v.componentWillMount && v.componentWillMount(), 
+                    a(v.__s, P.getDerivedStateFromProps(g, v.__s))), p = v.props, y = v.state, h) null == P.getDerivedStateFromProps && null != v.componentWillMount && v.componentWillMount(), 
                     null != v.componentDidMount && v.__h.push(v.componentDidMount); else {
-                        if (null == P.getDerivedStateFromProps && k !== p && null != v.componentWillReceiveProps && v.componentWillReceiveProps(k, x), 
-                        !v.__e && null != v.shouldComponentUpdate && !1 === v.shouldComponentUpdate(k, v.__s, x)) {
-                            for (v.props = k, v.state = v.__s, v.__d = !1, v.__v = u, u.__e = i.__e, u.__k = i.__k, 
-                            v.__h.length && f.push(v), s = 0; s < u.__k.length; s++) u.__k[s] && (u.__k[s].__ = u);
+                        if (null == P.getDerivedStateFromProps && g !== p && null != v.componentWillReceiveProps && v.componentWillReceiveProps(g, x), 
+                        !v.__e && null != v.shouldComponentUpdate && !1 === v.shouldComponentUpdate(g, v.__s, x) || u.__v === i.__v && !v.__) {
+                            for (v.props = g, v.state = v.__s, u.__v !== i.__v && (v.__d = !1), v.__v = u, u.__e = i.__e, 
+                            u.__k = i.__k, v.__h.length && f.push(v), s = 0; s < u.__k.length; s++) u.__k[s] && (u.__k[s].__ = u);
                             break n;
                         }
-                        null != v.componentWillUpdate && v.componentWillUpdate(k, v.__s, x), null != v.componentDidUpdate && v.__h.push((function() {
+                        null != v.componentWillUpdate && v.componentWillUpdate(g, v.__s, x), null != v.componentDidUpdate && v.__h.push((function() {
                             v.componentDidUpdate(p, y, w);
                         }));
                     }
-                    v.context = x, v.props = k, v.state = v.__s, (s = preact_module_n.__r) && s(u), 
+                    v.context = x, v.props = g, v.state = v.__s, (s = preact_module_n.__r) && s(u), 
                     v.__d = !1, v.__v = u, v.__P = l, s = v.render(v.props, v.state, v.context), u.__k = null != s && s.type == preact_module_d && null == s.key ? s.props.children : Array.isArray(s) ? s : [ s ], 
                     null != v.getChildContext && (t = a(a({}, t), v.getChildContext())), h || null == v.getSnapshotBeforeUpdate || (w = v.getSnapshotBeforeUpdate(p, y)), 
-                    preact_module_b(l, u, i, t, o, r, f, e, c), v.base = u.__e, v.__h.length && f.push(v), 
-                    g && (v.__E = v.__ = null), v.__e = !1;
-                } else u.__e = preact_module_$(i.__e, u, i, t, o, r, f, c);
+                    preact_module_b(l, u, i, t, r, o, f, e, c), v.base = u.__e, v.__h.length && f.push(v), 
+                    k && (v.__E = v.__ = null), v.__e = !1;
+                } else null == o && u.__v === i.__v ? (u.__k = i.__k, u.__e = i.__e) : u.__e = preact_module_$(i.__e, u, i, t, r, o, f, c);
                 (s = preact_module_n.diffed) && s(u);
             } catch (l) {
-                preact_module_n.__e(l, u, i);
+                u.__v = null, preact_module_n.__e(l, u, i);
             }
             return u.__e;
         }
@@ -379,31 +381,31 @@
                 }
             }));
         }
-        function preact_module_$(n, l, u, i, t, o, r, f) {
+        function preact_module_$(n, l, u, i, t, r, o, f) {
             var s, a, v, h, p, y = u.props, d = l.props;
-            if (t = "svg" === l.type || t, null != o) for (s = 0; s < o.length; s++) if (null != (a = o[s]) && ((null === l.type ? 3 === a.nodeType : a.localName === l.type) || n == a)) {
-                n = a, o[s] = null;
+            if (t = "svg" === l.type || t, null != r) for (s = 0; s < r.length; s++) if (null != (a = r[s]) && ((null === l.type ? 3 === a.nodeType : a.localName === l.type) || n == a)) {
+                n = a, r[s] = null;
                 break;
             }
             if (null == n) {
                 if (null === l.type) return document.createTextNode(d);
                 n = t ? document.createElementNS("http://www.w3.org/2000/svg", l.type) : document.createElement(l.type, d.is && {
                     is: d.is
-                }), o = null;
+                }), r = null, f = !1;
             }
-            if (null === l.type) y !== d && n.data != d && (n.data = d); else if (l !== u) {
-                if (null != o && (o = c.slice.call(n.childNodes)), v = (y = u.props || e).dangerouslySetInnerHTML, 
+            if (null === l.type) y !== d && n.data != d && (n.data = d); else {
+                if (null != r && (r = c.slice.call(n.childNodes)), v = (y = u.props || e).dangerouslySetInnerHTML, 
                 h = d.dangerouslySetInnerHTML, !f) {
                     if (y === e) for (y = {}, p = 0; p < n.attributes.length; p++) y[n.attributes[p].name] = n.attributes[p].value;
                     (h || v) && (h && v && h.__html == v.__html || (n.innerHTML = h && h.__html || ""));
                 }
                 (function(n, l, u, i, t) {
-                    var o;
-                    for (o in u) o in l || preact_module_N(n, o, null, u[o], i);
-                    for (o in l) t && "function" != typeof l[o] || "value" === o || "checked" === o || u[o] === l[o] || preact_module_N(n, o, l[o], u[o], i);
-                })(n, d, y, t, f), l.__k = l.props.children, h || preact_module_b(n, l, u, i, "foreignObject" !== l.type && t, o, r, e, f), 
-                f || ("value" in d && void 0 !== d.value && d.value !== n.value && (n.value = null == d.value ? "" : d.value), 
-                "checked" in d && void 0 !== d.checked && d.checked !== n.checked && (n.checked = d.checked));
+                    var r;
+                    for (r in u) "children" === r || "key" === r || r in l || preact_module_N(n, r, null, u[r], i);
+                    for (r in l) t && "function" != typeof l[r] || "children" === r || "key" === r || "value" === r || "checked" === r || u[r] === l[r] || preact_module_N(n, r, l[r], u[r], i);
+                })(n, d, y, t, f), h ? l.__k = [] : (l.__k = l.props.children, preact_module_b(n, l, u, i, "foreignObject" !== l.type && t, r, o, e, f)), 
+                f || ("value" in d && void 0 !== (s = d.value) && s !== n.value && preact_module_N(n, "value", s, y.value, !1), 
+                "checked" in d && void 0 !== (s = d.checked) && s !== n.checked && preact_module_N(n, "checked", s, y.checked, !1));
             }
             return n;
         }
@@ -415,9 +417,9 @@
             }
         }
         function preact_module_D(l, u, i) {
-            var t, o, r;
+            var t, r, o;
             if (preact_module_n.unmount && preact_module_n.unmount(l), (t = l.ref) && (t.current && t.current !== l.__e || preact_module_j(t, null, u)), 
-            i || "function" == typeof l.type || (i = null != (o = l.__e)), l.__e = l.__d = void 0, 
+            i || "function" == typeof l.type || (i = null != (r = l.__e)), l.__e = l.__d = void 0, 
             null != (t = l.__c)) {
                 if (t.componentWillUnmount) try {
                     t.componentWillUnmount();
@@ -426,8 +428,8 @@
                 }
                 t.base = t.__P = null;
             }
-            if (t = l.__k) for (r = 0; r < t.length; r++) t[r] && preact_module_D(t[r], u, i);
-            null != o && v(o);
+            if (t = l.__k) for (o = 0; o < t.length; o++) t[o] && preact_module_D(t[o], u, i);
+            null != r && preact_module_v(r);
         }
         function preact_module_E(n, l, u) {
             return this.constructor(n, u);
@@ -437,7 +439,7 @@
                 for (var u, i; l = l.__; ) if ((u = l.__c) && !u.__) try {
                     if (u.constructor && null != u.constructor.getDerivedStateFromError && (i = !0, 
                     u.setState(u.constructor.getDerivedStateFromError(n))), null != u.componentDidCatch && (i = !0, 
-                    u.componentDidCatch(n)), i) return preact_module_k(u.__E = u);
+                    u.componentDidCatch(n)), i) return g(u.__E = u);
                 } catch (l) {
                     n = l;
                 }
@@ -446,12 +448,12 @@
         }, preact_module_m.prototype.setState = function(n, l) {
             var u;
             u = this.__s !== this.state ? this.__s : this.__s = a({}, this.state), "function" == typeof n && (n = n(u, this.props)), 
-            n && a(u, n), null != n && this.__v && (l && this.__h.push(l), preact_module_k(this));
+            n && a(u, n), null != n && this.__v && (l && this.__h.push(l), g(this));
         }, preact_module_m.prototype.forceUpdate = function(n) {
-            this.__v && (this.__e = !0, n && this.__h.push(n), preact_module_k(this));
+            this.__v && (this.__e = !0, n && this.__h.push(n), g(this));
         }, preact_module_m.prototype.render = preact_module_d, preact_module_u = [], preact_module_i = 0, 
         preact_module_t = "function" == typeof Promise ? Promise.prototype.then.bind(Promise.resolve()) : setTimeout, 
-        preact_module_r = e, preact_module_f = 0;
+        preact_module_o = e, f = 0;
         var index_module_n = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|^--/i, index_module_o = function(e) {
             return String(e).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
         }, index_module_a = function(e, t) {
@@ -469,54 +471,56 @@
             }
             return t || void 0;
         }
-        function index_module_p(e, t) {
+        function index_module_c(e, t) {
             for (var r in t) e[r] = t[r];
             return e;
         }
-        function index_module_c(e, t) {
-            return Array.isArray(t) ? t.reduce(index_module_c, e) : null != t && !1 !== t && e.push(t), 
+        function index_module_f(e, t) {
+            return Array.isArray(t) ? t.reduce(index_module_f, e) : null != t && !1 !== t && e.push(t), 
             e;
         }
-        var index_module_f = {
+        var index_module_p = {
             shallow: !0
-        }, index_module_u = [], index_module_g = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/;
-        index_module_v.render = index_module_v;
-        function index_module_v(n, l, f, _, h, d) {
+        }, index_module_u = [], index_module_g = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/, index_module_ = function() {};
+        index_module_h.render = index_module_h;
+        function index_module_h(n, l, p, v, d, m) {
             if (null == n || "boolean" == typeof n) return "";
-            Array.isArray(n) && (n = preact_module_h(preact_module_d, null, n));
-            var m = n.type, x = n.props, y = !1;
+            Array.isArray(n) && (n = h(preact_module_d, null, n));
+            var x = n.type, y = n.props, b = !1;
             l = l || {};
-            var b, S = (f = f || {}).pretty, w = S && "string" == typeof S ? S : "\t";
-            if ("object" != typeof n && !m) return index_module_o(n);
-            if ("function" == typeof m) {
-                if (y = !0, !f.shallow || !_ && !1 !== f.renderRootComponent) {
-                    if (m === preact_module_d) {
-                        var k = "", O = [];
-                        index_module_c(O, n.props.children);
-                        for (var C = 0; C < O.length; C++) k += (C > 0 && S ? "\n" : "") + index_module_v(O[C], l, f, !1 !== f.shallowHighOrder, h, d);
-                        return k;
+            var S, w = (p = p || {}).pretty, k = w && "string" == typeof w ? w : "\t";
+            if ("object" != typeof n && !x) return index_module_o(n);
+            if ("function" == typeof x) {
+                if (b = !0, !p.shallow || !v && !1 !== p.renderRootComponent) {
+                    if (x === preact_module_d) {
+                        var O = "", C = [];
+                        index_module_f(C, n.props.children);
+                        for (var A = 0; A < C.length; A++) O += (A > 0 && w ? "\n" : "") + index_module_h(C[A], l, p, !1 !== p.shallowHighOrder, d, m);
+                        return O;
                     }
-                    var A, H = n.__c = {
+                    var H, j = n.__c = {
                         __v: n,
                         context: l,
                         props: n.props,
+                        setState: index_module_,
+                        forceUpdate: index_module_,
                         __h: []
                     };
-                    if (preact_module_n.__r && preact_module_n.__r(n), m.prototype && "function" == typeof m.prototype.render) {
-                        var j = m.contextType, $ = j && l[j.__c], F = null != j ? $ ? $.props.value : j.__ : l;
-                        (H = n.__c = new m(x, F)).__v = n, H._dirty = H.__d = !0, H.props = x, null == H.state && (H.state = {}), 
-                        null == H._nextState && null == H.__s && (H._nextState = H.__s = H.state), H.context = F, 
-                        m.getDerivedStateFromProps ? H.state = index_module_p(index_module_p({}, H.state), m.getDerivedStateFromProps(H.props, H.state)) : H.componentWillMount && H.componentWillMount(), 
-                        H.state = H._nextState !== H.state ? H._nextState : H.__s !== H.state ? H.__s : H.state, 
-                        A = H.render(H.props, H.state, H.context);
+                    if (preact_module_n.__r && preact_module_n.__r(n), x.prototype && "function" == typeof x.prototype.render) {
+                        var $ = x.contextType, F = $ && l[$.__c], L = null != $ ? F ? F.props.value : $.__ : l;
+                        (j = n.__c = new x(y, L)).__v = n, j._dirty = j.__d = !0, j.props = y, null == j.state && (j.state = {}), 
+                        null == j._nextState && null == j.__s && (j._nextState = j.__s = j.state), j.context = L, 
+                        x.getDerivedStateFromProps ? j.state = index_module_c(index_module_c({}, j.state), x.getDerivedStateFromProps(j.props, j.state)) : j.componentWillMount && j.componentWillMount(), 
+                        j.state = j._nextState !== j.state ? j._nextState : j.__s !== j.state ? j.__s : j.state, 
+                        H = j.render(j.props, j.state, j.context);
                     } else {
-                        var L = m.contextType, M = L && l[L.__c];
-                        A = m.call(n.__c, x, null != L ? M ? M.props.value : L.__ : l);
+                        var M = x.contextType, T = M && l[M.__c];
+                        H = x.call(n.__c, y, null != M ? T ? T.props.value : M.__ : l);
                     }
-                    return H.getChildContext && (l = index_module_p(index_module_p({}, l), H.getChildContext())), 
-                    index_module_v(A, l, f, !1 !== f.shallowHighOrder, h, d);
+                    return j.getChildContext && (l = index_module_c(index_module_c({}, l), j.getChildContext())), 
+                    index_module_h(H, l, p, !1 !== p.shallowHighOrder, d, m);
                 }
-                m = (b = m).displayName || b !== Function && b.name || function(e) {
+                x = (S = x).displayName || S !== Function && S.name || function(e) {
                     var t = (function() {}.toString.call(e).match(/^\s*function\s+([^( ]+)/) || "")[1];
                     if (!t) {
                         for (var r = -1, n = index_module_u.length; n--; ) if (index_module_u[n] === e) {
@@ -526,66 +530,66 @@
                         r < 0 && (r = index_module_u.push(e) - 1), t = "UnnamedComponent" + r;
                     }
                     return t;
-                }(b);
+                }(S);
             }
-            var T, D = "";
-            if (x) {
-                var N = Object.keys(x);
-                f && !0 === f.sortAttributes && N.sort();
-                for (var P = 0; P < N.length; P++) {
-                    var R = N[P], W = x[R];
-                    if ("children" !== R && !R.match(/[\s\n\\/='"\0<>]/) && (f && f.allAttributes || "key" !== R && "ref" !== R)) {
-                        if ("className" === R) {
-                            if (x.class) continue;
-                            R = "class";
-                        } else h && R.match(/^xlink:?./) && (R = R.toLowerCase().replace(/^xlink:?/, "xlink:"));
-                        "style" === R && W && "object" == typeof W && (W = index_module_s(W));
-                        var q = f.attributeHook && f.attributeHook(R, W, l, f, y);
-                        if (q || "" === q) D += q; else if ("dangerouslySetInnerHTML" === R) T = W && W.__html; else if ((W || 0 === W || "" === W) && "function" != typeof W) {
-                            if (!(!0 !== W && "" !== W || (W = R, f && f.xml))) {
-                                D += " " + R;
+            var D, N = "";
+            if (y) {
+                var P = Object.keys(y);
+                p && !0 === p.sortAttributes && P.sort();
+                for (var R = 0; R < P.length; R++) {
+                    var U = P[R], W = y[U];
+                    if ("children" !== U && !U.match(/[\s\n\\/='"\0<>]/) && (p && p.allAttributes || "key" !== U && "ref" !== U)) {
+                        if ("className" === U) {
+                            if (y.class) continue;
+                            U = "class";
+                        } else d && U.match(/^xlink:?./) && (U = U.toLowerCase().replace(/^xlink:?/, "xlink:"));
+                        "style" === U && W && "object" == typeof W && (W = index_module_s(W));
+                        var q = p.attributeHook && p.attributeHook(U, W, l, p, b);
+                        if (q || "" === q) N += q; else if ("dangerouslySetInnerHTML" === U) D = W && W.__html; else if ((W || 0 === W || "" === W) && "function" != typeof W) {
+                            if (!(!0 !== W && "" !== W || (W = U, p && p.xml))) {
+                                N += " " + U;
                                 continue;
                             }
-                            if ("value" === R) {
-                                if ("select" === m) {
-                                    d = W;
+                            if ("value" === U) {
+                                if ("select" === x) {
+                                    m = W;
                                     continue;
                                 }
-                                "option" === m && d == W && (D += " selected");
+                                "option" === x && m == W && (N += " selected");
                             }
-                            D += " " + R + '="' + index_module_o(W) + '"';
+                            N += " " + U + '="' + index_module_o(W) + '"';
                         }
                     }
                 }
             }
-            if (S) {
-                var z = D.replace(/^\n\s*/, " ");
-                z === D || ~z.indexOf("\n") ? S && ~D.indexOf("\n") && (D += "\n") : D = z;
+            if (w) {
+                var z = N.replace(/^\n\s*/, " ");
+                z === N || ~z.indexOf("\n") ? w && ~N.indexOf("\n") && (N += "\n") : N = z;
             }
-            if (D = "<" + m + D + ">", String(m).match(/[\s\n\\/='"\0<>]/)) throw new Error(m + " is not a valid HTML tag name in " + D);
-            var E = String(m).match(index_module_g);
-            E && (D = D.replace(/>$/, " />"));
-            var I, U = [];
-            if (T) S && index_module_i(T) && (T = "\n" + w + index_module_a(T, w)), D += T; else if (x && index_module_c(I = [], x.children).length) {
-                for (var Z = S && ~D.indexOf("\n"), B = !1, G = 0; G < I.length; G++) {
-                    var J = I[G];
-                    if (null != J && !1 !== J) {
-                        var K = index_module_v(J, l, f, !0, "svg" === m || "foreignObject" !== m && h, d);
-                        if (S && !Z && index_module_i(K) && (Z = !0), K) if (S) {
-                            var Q = K.length > 0 && "<" != K[0];
-                            B && Q ? U[U.length - 1] += K : U.push(K), B = Q;
-                        } else U.push(K);
+            if (N = "<" + x + N + ">", String(x).match(/[\s\n\\/='"\0<>]/)) throw new Error(x + " is not a valid HTML tag name in " + N);
+            var E = String(x).match(index_module_g);
+            E && (N = N.replace(/>$/, " />"));
+            var I, Z = [];
+            if (D) w && index_module_i(D) && (D = "\n" + k + index_module_a(D, k)), N += D; else if (y && index_module_f(I = [], y.children).length) {
+                for (var B = w && ~N.indexOf("\n"), G = !1, J = 0; J < I.length; J++) {
+                    var K = I[J];
+                    if (null != K && !1 !== K) {
+                        var Q = index_module_h(K, l, p, !0, "svg" === x || "foreignObject" !== x && d, m);
+                        if (w && !B && index_module_i(Q) && (B = !0), Q) if (w) {
+                            var V = Q.length > 0 && "<" != Q[0];
+                            G && V ? Z[Z.length - 1] += Q : Z.push(Q), G = V;
+                        } else Z.push(Q);
                     }
                 }
-                if (S && Z) for (var V = U.length; V--; ) U[V] = "\n" + w + index_module_a(U[V], w);
+                if (w && B) for (var X = Z.length; X--; ) Z[X] = "\n" + k + index_module_a(Z[X], k);
             }
-            if (U.length) D += U.join(""); else if (f && f.xml) return D.substring(0, D.length - 1) + " />";
-            return E || (S && ~D.indexOf("\n") && (D += "\n"), D += "</" + m + ">"), D;
+            if (Z.length) N += Z.join(""); else if (p && p.xml) return N.substring(0, N.length - 1) + " />";
+            return E || (w && ~N.indexOf("\n") && (N += "\n"), N += "</" + x + ">"), N;
         }
-        index_module_v.shallowRender = function(e, t) {
-            return index_module_v(e, t, index_module_f);
+        index_module_h.shallowRender = function(e, t) {
+            return index_module_h(e, t, index_module_p);
         };
-        var index_module = index_module_v;
+        var index_module = index_module_h;
         function utils_isPromise(item) {
             try {
                 if (!item) return !1;
@@ -1605,7 +1609,7 @@
         }
         memoize((function(orderID) {
             return callGraphQL({
-                query: "\n            query GetCheckoutDetails($orderID: String!) {\n                checkoutSession(token: $orderID) {\n                    cart {\n                        intent\n                        amounts {\n                            total {\n                                currencyCode\n                            }\n                        }\n                        shippingAddress {\n                            isFullAddress\n                        }\n                    }\n                    flags {\n                        hideShipping\n                        isShippingAddressRequired\n                        isChangeShippingAddressAllowed\n                    }\n                }\n            }\n        ",
+                query: "\n            query GetCheckoutDetails($orderID: String!) {\n                checkoutSession(token: $orderID) {\n                    cart {\n                        intent\n                        amounts {\n                            total {\n                                currencyCode\n                            }\n                        }\n                        shippingAddress {\n                            isFullAddress\n                        }\n                        payees {\n                            merchantId\n                            email {\n                                stringValue\n                            }\n                        }\n                    }\n                    flags {\n                        hideShipping\n                        isShippingAddressRequired\n                        isChangeShippingAddressAllowed\n                    }\n                }\n            }\n        ",
                 variables: {
                     orderID: orderID
                 }
@@ -1773,7 +1777,8 @@
                 })).then((function(orderID) {
                     var _getLogger$info$track;
                     getLogger().info("button_approve").track((_getLogger$info$track = {}, _getLogger$info$track.transition_name = "process_checkout_approve", 
-                    _getLogger$info$track.token = orderID, _getLogger$info$track)).flush();
+                    _getLogger$info$track.context_type = "EC-Token", _getLogger$info$track.token = orderID, 
+                    _getLogger$info$track.context_id = orderID, _getLogger$info$track)).flush();
                     var data = {
                         orderID: orderID,
                         payerID: payerID,
@@ -2039,7 +2044,8 @@
                 return createOrder().then((function(orderID) {
                     var _getLogger$info$track;
                     getLogger().info("button_cancel").track((_getLogger$info$track = {}, _getLogger$info$track.transition_name = "process_checkout_cancel", 
-                    _getLogger$info$track.token = orderID, _getLogger$info$track)).flush();
+                    _getLogger$info$track.context_type = "EC-Token", _getLogger$info$track.token = orderID, 
+                    _getLogger$info$track.context_id = orderID, _getLogger$info$track)).flush();
                     return onCancel({
                         orderID: {
                             orderID: orderID
@@ -2064,94 +2070,95 @@
                 }));
             }));
         }
-        var hooks_module_t, hooks_module_r, hooks_module_u, hooks_module_i = [], hooks_module_o = preact_module_n.__r, hooks_module_f = preact_module_n.diffed, hooks_module_c = preact_module_n.__c, hooks_module_e = preact_module_n.unmount;
-        function hooks_module_a(t) {
-            preact_module_n.__h && preact_module_n.__h(hooks_module_r);
-            var u = hooks_module_r.__H || (hooks_module_r.__H = {
+        var hooks_module_t, hooks_module_u, hooks_module_r, hooks_module_i = 0, hooks_module_o = [], hooks_module_c = preact_module_n.__r, hooks_module_f = preact_module_n.diffed, hooks_module_e = preact_module_n.__c, hooks_module_a = preact_module_n.unmount;
+        function hooks_module_v(t, r) {
+            preact_module_n.__h && preact_module_n.__h(hooks_module_u, t, hooks_module_i || r), 
+            hooks_module_i = 0;
+            var o = hooks_module_u.__H || (hooks_module_u.__H = {
                 __: [],
                 __h: []
             });
-            return t >= u.__.length && u.__.push({}), u.__[t];
+            return t >= o.__.length && o.__.push({}), o.__[t];
         }
-        function hooks_module_v(n) {
-            return function(n, u, i) {
-                var o = hooks_module_a(hooks_module_t++);
-                return o.__c || (o.__c = hooks_module_r, o.__ = [ hooks_module_x(void 0, u), function(t) {
-                    var r = n(o.__[0], t);
-                    o.__[0] !== r && (o.__[0] = r, o.__c.setState({}));
+        function hooks_module_m(n) {
+            return hooks_module_i = 1, function(n, r, i) {
+                var o = hooks_module_v(hooks_module_t++, 2);
+                return o.__c || (o.__c = hooks_module_u, o.__ = [ hooks_module_E(void 0, r), function(t) {
+                    var u = n(o.__[0], t);
+                    o.__[0] !== u && (o.__[0] = u, o.__c.setState({}));
                 } ]), o.__;
-            }(hooks_module_x, n);
+            }(hooks_module_E, n);
         }
-        function hooks_module_p(n, u) {
-            var i = hooks_module_a(hooks_module_t++);
-            (function(n, t) {
-                return !n || t.some((function(t, r) {
-                    return t !== n[r];
+        function hooks_module_l(r, i) {
+            var o = hooks_module_v(hooks_module_t++, 3);
+            !preact_module_n.__s && function(n, t) {
+                return !n || t.some((function(t, u) {
+                    return t !== n[u];
                 }));
-            })(i.__H, u) && (i.__ = n, i.__H = u, hooks_module_r.__H.__h.push(i));
+            }(o.__H, i) && (o.__ = r, o.__H = i, hooks_module_u.__H.__h.push(o));
         }
-        function hooks_module_F() {
-            hooks_module_i.some((function(t) {
+        function hooks_module_() {
+            hooks_module_o.some((function(t) {
                 if (t.__P) try {
-                    t.__H.__h.forEach(hooks_module_), t.__H.__h.forEach(hooks_module_g), t.__H.__h = [];
-                } catch (r) {
-                    return preact_module_n.__e(r, t.__v), !0;
+                    t.__H.__h.forEach(hooks_module_g), t.__H.__h.forEach(hooks_module_q), t.__H.__h = [];
+                } catch (u) {
+                    return t.__H.__h = [], preact_module_n.__e(u, t.__v), !0;
                 }
-            })), hooks_module_i = [];
-        }
-        function hooks_module_(n) {
-            n.t && n.t();
+            })), hooks_module_o = [];
         }
         function hooks_module_g(n) {
+            n.t && n.t();
+        }
+        function hooks_module_q(n) {
             var t = n.__();
             "function" == typeof t && (n.t = t);
         }
-        function hooks_module_x(n, t) {
+        function hooks_module_E(n, t) {
             return "function" == typeof t ? t(n) : t;
         }
         preact_module_n.__r = function(n) {
-            hooks_module_o && hooks_module_o(n), hooks_module_t = 0, (hooks_module_r = n.__c).__H && (hooks_module_r.__H.__h.forEach(hooks_module_), 
-            hooks_module_r.__H.__h.forEach(hooks_module_g), hooks_module_r.__H.__h = []);
+            hooks_module_c && hooks_module_c(n), hooks_module_t = 0, (hooks_module_u = n.__c).__H && (hooks_module_u.__H.__h.forEach(hooks_module_g), 
+            hooks_module_u.__H.__h.forEach(hooks_module_q), hooks_module_u.__H.__h = []);
         }, preact_module_n.diffed = function(t) {
             hooks_module_f && hooks_module_f(t);
-            var r = t.__c;
-            if (r) {
-                var o = r.__H;
-                o && o.__h.length && (1 !== hooks_module_i.push(r) && hooks_module_u === preact_module_n.requestAnimationFrame || ((hooks_module_u = preact_module_n.requestAnimationFrame) || function(n) {
-                    var t, r = function() {
-                        clearTimeout(u), cancelAnimationFrame(t), setTimeout(n);
-                    }, u = setTimeout(r, 100);
-                    "undefined" != typeof window && (t = requestAnimationFrame(r));
-                })(hooks_module_F));
+            var u = t.__c;
+            if (u) {
+                var i = u.__H;
+                i && i.__h.length && (1 !== hooks_module_o.push(u) && hooks_module_r === preact_module_n.requestAnimationFrame || ((hooks_module_r = preact_module_n.requestAnimationFrame) || function(n) {
+                    var t, u = function() {
+                        clearTimeout(r), cancelAnimationFrame(t), setTimeout(n);
+                    }, r = setTimeout(u, 100);
+                    "undefined" != typeof window && (t = requestAnimationFrame(u));
+                })(hooks_module_));
             }
-        }, preact_module_n.__c = function(t, r) {
-            r.some((function(t) {
+        }, preact_module_n.__c = function(t, u) {
+            u.some((function(t) {
                 try {
-                    t.__h.forEach(hooks_module_), t.__h = t.__h.filter((function(n) {
-                        return !n.__ || hooks_module_g(n);
+                    t.__h.forEach(hooks_module_g), t.__h = t.__h.filter((function(n) {
+                        return !n.__ || hooks_module_q(n);
                     }));
-                } catch (u) {
-                    r.some((function(n) {
+                } catch (r) {
+                    u.some((function(n) {
                         n.__h && (n.__h = []);
-                    })), r = [], preact_module_n.__e(u, t.__v);
+                    })), u = [], preact_module_n.__e(r, t.__v);
                 }
-            })), hooks_module_c && hooks_module_c(t, r);
+            })), hooks_module_e && hooks_module_e(t, u);
         }, preact_module_n.unmount = function(t) {
-            hooks_module_e && hooks_module_e(t);
-            var r = t.__c;
-            if (r) {
-                var u = r.__H;
-                if (u) try {
-                    u.__.forEach((function(n) {
+            hooks_module_a && hooks_module_a(t);
+            var u = t.__c;
+            if (u) {
+                var r = u.__H;
+                if (r) try {
+                    r.__.forEach((function(n) {
                         return n.t && n.t();
                     }));
                 } catch (t) {
-                    preact_module_n.__e(t, r.__v);
+                    preact_module_n.__e(t, u.__v);
                 }
             }
         };
         var StyleContext = (l = {}, (u = {
-            __c: "__cC" + preact_module_f++,
+            __c: "__cC" + f++,
             __: void 0,
             Consumer: function(n, l) {
                 return n.children(l);
@@ -2160,9 +2167,9 @@
                 var i, t = this;
                 return this.getChildContext || (i = [], this.getChildContext = function() {
                     return l[u.__c] = t, l;
-                }, this.shouldComponentUpdate = function(l) {
-                    n.value !== l.value && i.some((function(n) {
-                        n.context = l.value, preact_module_k(n);
+                }, this.shouldComponentUpdate = function(n) {
+                    t.props.value !== n.value && i.some((function(l) {
+                        l.context = n.value, g(l);
                     }));
                 }, this.sub = function(n) {
                     i.push(n);
@@ -2172,12 +2179,12 @@
                     };
                 }), n.children;
             }
-        }).Consumer.contextType = u, u);
+        }).Consumer.contextType = u, u.Provider.__ = u, u);
         var l, u;
         var style_StyleSheet = function(_ref) {
             var cspNonce = _ref.cspNonce, _ref$children = _ref.children, children = void 0 === _ref$children ? null : _ref$children;
-            var _useState = hooks_module_v({}), styles = _useState[0], setStyles = _useState[1];
-            return preact_module_h(StyleContext.Provider, {
+            var _useState = hooks_module_m({}), styles = _useState[0], setStyles = _useState[1];
+            return h(StyleContext.Provider, {
                 value: {
                     cspNonce: cspNonce,
                     addStyle: function(css) {
@@ -2201,11 +2208,11 @@
                         }));
                     }
                 }
-            }, children, preact_module_h((function() {
+            }, children, h((function() {
                 var styleString = Object.keys(styles).filter((function(style) {
                     return styles[style] > 0;
                 })).join("\n");
-                return preact_module_h("style", {
+                return h("style", {
                     nonce: cspNonce
                 }, styleString);
             }), null));
@@ -2213,13 +2220,11 @@
         var style_Style = function(_ref2) {
             var css = _ref2.css, _ref2$children = _ref2.children, children = void 0 === _ref2$children ? null : _ref2$children;
             var _useContext = function(n) {
-                var u = hooks_module_r.context[n.__c];
-                if (!u) return n.__;
-                var i = hooks_module_a(hooks_module_t++);
-                return null == i.__ && (i.__ = !0, u.sub(hooks_module_r)), u.props.value;
+                var r = hooks_module_u.context[n.__c], i = hooks_module_v(hooks_module_t++, 9);
+                return i.__c = n, r ? (null == i.__ && (i.__ = !0, r.sub(hooks_module_u)), r.props.value) : n.__;
             }(StyleContext), addStyle = _useContext.addStyle, removeStyle = _useContext.removeStyle;
             var cssText = css._getCss();
-            isServer() ? addStyle(cssText) : hooks_module_p((function() {
+            isServer() ? addStyle(cssText) : hooks_module_l((function() {
                 addStyle(cssText);
                 return function() {
                     return removeStyle(cssText);
@@ -2228,40 +2233,40 @@
             return children;
         };
         var check_Check = function() {
-            return preact_module_h("svg", {
+            return h("svg", {
                 width: "18px",
                 height: "15px",
                 viewBox: "0 0 18 15",
                 version: "1.1",
                 xmlns: "http://www.w3.org/2000/svg"
-            }, preact_module_h("title", null, "Icons/check"), preact_module_h("desc", null, "Created with Sketch."), preact_module_h("g", {
+            }, h("title", null, "Icons/check"), h("desc", null, "Created with Sketch."), h("g", {
                 id: "✅-Icon-Library",
                 stroke: "none",
                 "stroke-width": "1",
                 fill: "none",
                 "fill-rule": "evenodd"
-            }, preact_module_h("g", {
+            }, h("g", {
                 id: "Icons/check",
                 transform: "translate(-6.000000, -7.000000)",
                 fill: "#0070BA",
                 "fill-rule": "nonzero"
-            }, preact_module_h("path", {
+            }, h("path", {
                 d: "M11.4121381,19.6994417 L22.6691362,7.6974334 C22.9052747,7.44566678 23.3008,7.43299769 23.5525666,7.6691362 C23.8043332,7.90527472 23.8170023,8.30079998 23.5808638,8.5525666 L11.8567862,21.0525666 C11.6057696,21.3201959 11.1792894,21.315028 10.9348317,21.0413946 L6.40890929,15.9753097 C6.17894091,15.7178949 6.20119062,15.3227928 6.45860541,15.0928244 C6.7160202,14.862856 7.11112232,14.8851057 7.34109071,15.1425205 L11.4121381,19.6994417 Z",
                 id: "Path"
             }))));
         };
-        var style_scopedscopeId_fdd787a1 = __webpack_require__(2);
-        var style_scopedscopeId_fdd787a1_default = __webpack_require__.n(style_scopedscopeId_fdd787a1);
+        var style_scopedscopeId_d2ff3bcf = __webpack_require__(2);
+        var style_scopedscopeId_d2ff3bcf_default = __webpack_require__.n(style_scopedscopeId_d2ff3bcf);
         var walletItem_WalletItem = function(_ref) {
             var selected = _ref.selected, details = _ref.details, selectWalletItemHandler = _ref.selectWalletItemHandler, listOpen = _ref.listOpen, listOpenHandler = _ref.listOpenHandler;
-            var _useState = hooks_module_v(selected), showSelected = _useState[0], setShowSelected = _useState[1];
-            hooks_module_p((function() {
+            var _useState = hooks_module_m(selected), showSelected = _useState[0], setShowSelected = _useState[1];
+            hooks_module_l((function() {
                 setShowSelected(selected);
             }), [ selected ]);
-            return preact_module_h(style_Style, {
-                css: style_scopedscopeId_fdd787a1_default.a,
-                "data-v-fdd787a1": ""
-            }, preact_module_h("div", {
+            return h(style_Style, {
+                css: style_scopedscopeId_d2ff3bcf_default.a,
+                "data-v-d2ff3bcf": ""
+            }, h("div", {
                 className: "wallet-item " + (selected ? "selected-wallet-item" : ""),
                 onClick: function() {
                     return function(item) {
@@ -2269,48 +2274,48 @@
                         listOpenHandler(!listOpen);
                     }(details.id);
                 },
-                "data-v-fdd787a1": ""
-            }, preact_module_h("div", {
+                "data-v-d2ff3bcf": ""
+            }, h("div", {
                 className: "icon",
-                "data-v-fdd787a1": ""
-            }, preact_module_h("img", {
+                "data-v-d2ff3bcf": ""
+            }, h("img", {
                 src: details.fundingOptionIcon,
-                "data-v-fdd787a1": ""
-            })), preact_module_h("div", {
+                "data-v-d2ff3bcf": ""
+            })), h("div", {
                 className: "description",
-                "data-v-fdd787a1": ""
-            }, preact_module_h("div", {
+                "data-v-d2ff3bcf": ""
+            }, h("div", {
                 className: "name",
-                "data-v-fdd787a1": ""
-            }, details.fundingOptionTitle), preact_module_h("div", {
+                "data-v-d2ff3bcf": ""
+            }, details.fundingOptionTitle), h("div", {
                 className: "details",
-                "data-v-fdd787a1": ""
-            }, preact_module_h("span", {
+                "data-v-d2ff3bcf": ""
+            }, h("span", {
                 className: "type",
-                "data-v-fdd787a1": ""
-            }, details.instrumentSubType, " "), preact_module_h("span", {
+                "data-v-d2ff3bcf": ""
+            }, details.instrumentSubType, " "), h("span", {
                 className: "digits",
-                "data-v-fdd787a1": ""
-            }, details.lastDigits))), details.showPreferredText ? preact_module_h("div", {
+                "data-v-d2ff3bcf": ""
+            }, details.lastDigits))), details.showPreferredText ? h("div", {
                 className: "preferred",
-                "data-v-fdd787a1": ""
-            }, "PREFERRED") : "", preact_module_h("div", {
+                "data-v-d2ff3bcf": ""
+            }, "PREFERRED") : "", h("div", {
                 className: "flex-spacer",
-                "data-v-fdd787a1": ""
-            }), showSelected ? preact_module_h("div", {
+                "data-v-d2ff3bcf": ""
+            }), showSelected ? h("div", {
                 className: "selected",
-                "data-v-fdd787a1": ""
-            }, preact_module_h(check_Check, {
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
+            }, h(check_Check, {
+                "data-v-d2ff3bcf": ""
             })) : ""));
         };
         var style_scopedscopeId_d7b06a5e = __webpack_require__(3);
         var style_scopedscopeId_d7b06a5e_default = __webpack_require__.n(style_scopedscopeId_d7b06a5e);
         var credit_CreditBanner = function() {
-            return preact_module_h(style_Style, {
+            return h(style_Style, {
                 css: style_scopedscopeId_d7b06a5e_default.a,
                 "data-v-d7b06a5e": ""
-            }, preact_module_h("div", {
+            }, h("div", {
                 "data-v-d7b06a5e": ""
             }, "This is where the credit messaging goes..."));
         };
@@ -2346,58 +2351,58 @@
                 lastDigits: "PAYPAL" === subType ? "" : "•••• " + (digits || "")
             };
         };
-        var style_scopedscopeId_d2ff3bcf = __webpack_require__(4);
-        var style_scopedscopeId_d2ff3bcf_default = __webpack_require__.n(style_scopedscopeId_d2ff3bcf);
+        var style_scopedscopeId_fdd787a1 = __webpack_require__(4);
+        var style_scopedscopeId_fdd787a1_default = __webpack_require__.n(style_scopedscopeId_fdd787a1);
         var wallet_Wallet = function(_ref) {
             var checkoutSession = _ref.checkoutSession;
-            var fundingOptions = checkoutSession.fundingOptions, _useState = hooks_module_v(!1), listOpen = _useState[0], setListOpen = _useState[1], _useState2 = hooks_module_v(fundingOptions[0]), selectedWalletItem = _useState2[0], setSelectedWalletItem = _useState2[1];
+            var fundingOptions = checkoutSession.fundingOptions, _useState = hooks_module_m(!1), listOpen = _useState[0], setListOpen = _useState[1], _useState2 = hooks_module_m(fundingOptions[0]), selectedWalletItem = _useState2[0], setSelectedWalletItem = _useState2[1];
             var changeSelectedWalletItem = function(itemId) {
                 var newItem = fundingOptions.find((function(option) {
                     return option.id === itemId;
                 }));
                 setSelectedWalletItem(newItem);
             };
-            return preact_module_h(style_Style, {
-                css: style_scopedscopeId_d2ff3bcf_default.a,
-                "data-v-d2ff3bcf": ""
-            }, preact_module_h("div", {
+            return h(style_Style, {
+                css: style_scopedscopeId_fdd787a1_default.a,
+                "data-v-fdd787a1": ""
+            }, h("div", {
                 className: "wallet",
-                "data-v-d2ff3bcf": ""
-            }, listOpen ? "" : preact_module_h(walletItem_WalletItem, {
+                "data-v-fdd787a1": ""
+            }, listOpen ? "" : h(walletItem_WalletItem, {
                 selected: !0,
                 details: buildWalletItemDetails(selectedWalletItem),
                 selectWalletItemHandler: changeSelectedWalletItem,
                 listOpen: listOpen,
                 listOpenHandler: setListOpen,
-                "data-v-d2ff3bcf": ""
-            }), listOpen ? preact_module_h("div", {
-                "data-v-d2ff3bcf": ""
+                "data-v-fdd787a1": ""
+            }), listOpen ? h("div", {
+                "data-v-fdd787a1": ""
             }, fundingOptions.map((function(option) {
-                return preact_module_h(walletItem_WalletItem, {
+                return h(walletItem_WalletItem, {
                     selected: option.id === selectedWalletItem.id,
                     details: buildWalletItemDetails(option),
                     selectWalletItemHandler: changeSelectedWalletItem,
                     listOpen: listOpen,
                     listOpenHandler: setListOpen,
-                    "data-v-d2ff3bcf": ""
+                    "data-v-fdd787a1": ""
                 });
-            })), preact_module_h(credit_CreditBanner, {
+            })), h(credit_CreditBanner, {
                 checkoutSession: checkoutSession,
-                "data-v-d2ff3bcf": ""
-            }), preact_module_h("div", {
+                "data-v-fdd787a1": ""
+            }), h("div", {
                 className: "add-card-button",
-                "data-v-d2ff3bcf": ""
-            }, preact_module_h("a", {
+                "data-v-fdd787a1": ""
+            }, h("a", {
                 href: "#",
-                "data-v-d2ff3bcf": ""
+                "data-v-fdd787a1": ""
             }, "Add debit or credit card"))) : ""));
         };
         var page_style = __webpack_require__(5);
         var style_default = __webpack_require__.n(page_style);
         var page_Page = function(_ref) {
-            return preact_module_h(style_Style, {
+            return h(style_Style, {
                 css: style_default.a
-            }, preact_module_h(wallet_Wallet, {
+            }, h(wallet_Wallet, {
                 checkoutSession: _ref.checkoutSession
             }));
         };
@@ -2405,14 +2410,14 @@
             throw new Error("Not implemented");
         }
         function App(_ref4) {
-            return preact_module_h(style_StyleSheet, {
+            return h(style_StyleSheet, {
                 cspNonce: _ref4.cspNonce
-            }, preact_module_h(page_Page, {
+            }, h(page_Page, {
                 checkoutSession: _ref4.checkoutSession
             }));
         }
         function renderWallet(props) {
-            return index_module(preact_module_h(App, props));
+            return index_module(h(App, props));
         }
         function setupWallet(_ref5) {
             var buyerAccessToken = _ref5.buyerAccessToken, cspNonce = _ref5.cspNonce, checkoutSession = _ref5.checkoutSession;
@@ -2426,14 +2431,15 @@
                             var planID = _ref.checkoutSession.fundingOptions[0].allPlans[0].id;
                             return (0, props.createOrder)().then((function(orderID) {
                                 return callGraphQL({
-                                    query: "\n            mutation ApproveOrder(\n                $orderID : String!\n                $planID : String!\n            ) {\n                approvePayment(\n                    token: $orderID\n                    selectedPlanId: $planID\n                ) {\n                    buyer {\n                        userId\n                    }\n                }\n            }\n        ",
+                                    query: "\n            mutation ApproveOrder(\n                $orderID : String!\n                $planID : String\n                $instrumentID : String\n            ) {\n                approvePayment(\n                    token: $orderID\n                    selectedPlanId: $planID\n                    selectedInstrumentId : $instrumentID\n                ) {\n                    buyer {\n                        userId\n                    }\n                }\n            }\n        ",
                                     variables: {
                                         orderID: (_ref10 = {
                                             orderID: orderID,
                                             planID: planID,
                                             buyerAccessToken: buyerAccessToken
                                         }).orderID,
-                                        planID: _ref10.planID
+                                        planID: _ref10.planID,
+                                        instrumentID: _ref10.instrumentID
                                     },
                                     headers: (_headers9 = {}, _headers9["x-paypal-internal-euat"] = _ref10.buyerAccessToken, 
                                     _headers9)
@@ -2523,11 +2529,11 @@
             });
             var _ref, facilitatorAccessToken, xprops, env, vault, commit, locale, platform, sessionID, intent, walletSessionID, clientID, partnerAttributionID, correlationID, getParentDomain, clientAccessToken, getPageUrl, rememberFunding, onError, stageHost, apiStageHost, style, getParent, currency, merchantID, _xprops$setup, setup, merchantDomain, createOrder;
             !function(l, u, i) {
-                var t, o, f;
-                preact_module_n.__ && preact_module_n.__(l, u), o = (t = i === preact_module_r) ? null : u.__k, 
-                l = preact_module_h(preact_module_d, null, [ l ]), f = [], preact_module_A(u, u.__k = l, o || e, e, void 0 !== u.ownerSVGElement, o ? null : c.slice.call(u.childNodes), f, e, t), 
+                var t, r, f;
+                preact_module_n.__ && preact_module_n.__(l, u), r = (t = i === preact_module_o) ? null : u.__k, 
+                l = h(preact_module_d, null, [ l ]), f = [], preact_module_A(u, u.__k = l, r || e, e, void 0 !== u.ownerSVGElement, r ? null : c.slice.call(u.childNodes), f, e, t), 
                 preact_module_T(f, l);
-            }(preact_module_h(App, {
+            }(h(App, {
                 cspNonce: cspNonce,
                 checkoutSession: checkoutSession
             }), function() {
@@ -2538,4 +2544,3 @@
         }
     } ]);
 }));
-//# sourceMappingURL=smart-wallet.js.map
