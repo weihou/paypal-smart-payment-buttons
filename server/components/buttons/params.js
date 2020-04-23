@@ -4,19 +4,10 @@
 import { ENV, COUNTRY, CURRENCY, INTENT, COMMIT, VAULT, CARD, FUNDING, DEFAULT_COUNTRY, COUNTRY_LANGS } from '@paypal/sdk-constants';
 import { values } from 'belter';
 
-import { HTTP_HEADER } from '../../config';
+import { HTTP_HEADER, ERROR_CODE } from '../../config';
 import type { FundingEligibility } from '../../service';
 import type { ExpressRequest, ExpressResponse, LocaleType } from '../../types';
-
-function getNonce(res : ExpressResponse) : string {
-    let nonce = res.locals && res.locals.nonce;
-
-    if (!nonce || typeof nonce !== 'string') {
-        nonce = '';
-    }
-
-    return nonce;
-}
+import { makeError } from '../../lib';
 
 export type RiskData = {||};
 
@@ -38,6 +29,7 @@ type ParamsType = {|
     disableCard : $ReadOnlyArray<?$Values<typeof CARD>>,
     merchantID? : $ReadOnlyArray<string>,
     buttonSessionID : string,
+    pageSessionID : string,
     clientAccessToken? : string,
     debug? : boolean,
     style : ?StyleType,
@@ -46,6 +38,11 @@ type ParamsType = {|
     amount? : string,
     clientMetadataID? : string,
     riskData? : string
+|};
+
+type Style = {|
+    label : string,
+    period : ?number
 |};
 
 type RequestParams = {|
@@ -65,25 +62,35 @@ type RequestParams = {|
     basicFundingEligibility : FundingEligibility,
     locale : LocaleType,
     debug : boolean,
-    style : {|
-        label : string,
-        period : ?number
-    |},
+    style : Style,
     onShippingChange : boolean,
     userIDToken : ?string,
     amount : ?string,
-    clientMetadataID : ?string,
+    clientMetadataID : string,
     riskData : ?RiskData
 |};
+
+function getCSPNonce(res : ExpressResponse) : string {
+    let nonce = res.locals && res.locals.nonce;
+
+    if (!nonce || typeof nonce !== 'string') {
+        nonce = '';
+    }
+
+    return nonce;
+}
 
 function getFundingEligibilityParam(req : ExpressRequest) : FundingEligibility {
     const encodedFundingEligibility = req.query.fundingEligibility;
 
     if (encodedFundingEligibility && typeof encodedFundingEligibility === 'string') {
-        const fundingEligibilityInput = JSON.parse(
-            Buffer.from(encodedFundingEligibility, 'base64').toString('utf8')
-        );
+        let fundingEligibilityInput;
 
+        try {
+            fundingEligibilityInput = JSON.parse(Buffer.from(encodedFundingEligibility, 'base64').toString('utf8'));
+        } catch (err) {
+            throw new makeError(ERROR_CODE.VALIDATION_ERROR, `Invalid funding eligibility: ${ encodedFundingEligibility }`, err);
+        }
         const fundingEligibility = {};
         
         for (const fundingSource of values(FUNDING)) {
@@ -150,57 +157,90 @@ function getRiskDataParam(req : ExpressRequest) : ?RiskData {
         return;
     }
 
-    return JSON.parse(
-        Buffer.from(serializedRiskData, 'base64').toString('utf8')
-    );
+    try {
+        return JSON.parse(Buffer.from(serializedRiskData, 'base64').toString('utf8'));
+    } catch (err) {
+        throw new makeError(ERROR_CODE.VALIDATION_ERROR, `Invalid risk data: ${ serializedRiskData }`, err);
+    }
+}
+
+function getBuyerCountry(req : ExpressRequest, params : ParamsType) : $Values<typeof COUNTRY> {
+    return params.buyerCountry || req.get(HTTP_HEADER.PP_GEO_LOC) || COUNTRY.US;
+}
+
+function getLocale(params : ParamsType) : LocaleType {
+    let {
+        locale: {
+            country = DEFAULT_COUNTRY,
+            lang
+        } = {}
+    } = params;
+
+    const langs = COUNTRY_LANGS[country];
+
+    if (!langs) {
+        throw makeError(ERROR_CODE.VALIDATION_ERROR, `Invalid locale country: ${ country }`);
+    }
+
+    lang = lang || langs[0];
+
+    if (langs.indexOf(lang) === -1) {
+        throw makeError(ERROR_CODE.VALIDATION_ERROR, `Invalid locale language: ${ lang }`);
+    }
+
+    return {
+        country,
+        lang
+    };
+}
+
+function getAmount(params : ParamsType) : ?string {
+    if (params.amount) {
+        let amount = params.amount.toString();
+        if (amount.match(/^\d+$/)) {
+            amount = `${ amount }.00`;
+        }
+        return amount;
+    }
+}
+
+function getStyle(params : ParamsType) : Style {
+    const {
+        label = 'paypal',
+        period
+    } = params.style || {};
+
+    return { label, period };
 }
 
 export function getParams(params : ParamsType, req : ExpressRequest, res : ExpressResponse) : RequestParams {
     const {
         env,
         clientID,
-        locale = {},
-        buyerCountry = (req.get(HTTP_HEADER.PP_GEO_LOC) || COUNTRY.US),
         currency,
         intent,
         commit,
         vault,
-        style: buttonStyle,
         disableFunding,
         disableCard,
         merchantID,
-        amount,
-        clientMetadataID,
         buttonSessionID,
+        pageSessionID,
+        clientMetadataID = pageSessionID,
         clientAccessToken,
         userIDToken,
         debug = false,
         onShippingChange = false
     } = params;
 
-    const {
-        country = DEFAULT_COUNTRY,
-        lang = COUNTRY_LANGS[country][0]
-    } = locale;
-
-    const cspNonce = getNonce(res);
+    const locale = getLocale(params);
+    const cspNonce = getCSPNonce(res);
+    const amount = getAmount(params);
+    const style = getStyle(params);
+    const buyerCountry = getBuyerCountry(req, params);
 
     const basicFundingEligibility = getFundingEligibilityParam(req);
     const riskData = getRiskDataParam(req);
-
-    const {
-        label = 'paypal',
-        period
-    } = buttonStyle || {};
-    const style = { label, period };
-
-    let finalAmount = amount;
-    if (finalAmount) {
-        finalAmount = finalAmount.toString();
-        if (finalAmount.match(/^\d+$/)) {
-            finalAmount = `${ finalAmount }.00`;
-        }
-    }
 
     return {
         env,
@@ -221,8 +261,8 @@ export function getParams(params : ParamsType, req : ExpressRequest, res : Expre
         debug,
         style,
         onShippingChange,
-        locale: { country, lang },
-        amount: finalAmount,
+        locale,
+        amount,
         riskData,
         clientMetadataID
     };

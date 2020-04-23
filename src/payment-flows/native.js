@@ -5,7 +5,7 @@ import { extendUrl, uniqueID, getUserAgent, supportsPopups, memoize, stringifyEr
     isSafari, isChrome, stringifyErrorMessage, cleanup, once, noop } from 'belter/src';
 import { ZalgoPromise } from 'zalgo-promise/src';
 import { PLATFORM, ENV, FPTI_KEY } from '@paypal/sdk-constants/src';
-import { type CrossDomainWindowType, getDomain, isWindowClosed, onCloseWindow } from 'cross-domain-utils/src';
+import { type CrossDomainWindowType, isWindowClosed, onCloseWindow } from 'cross-domain-utils/src';
 
 import type { ButtonProps } from '../button/props';
 import { NATIVE_CHECKOUT_URI, WEB_CHECKOUT_URI, NATIVE_CHECKOUT_POPUP_URI } from '../config';
@@ -37,8 +37,11 @@ const SOCKET_MESSAGE = {
 };
 
 const NATIVE_DOMAIN = 'https://www.paypal.com';
+const NATIVE_DOMAIN_SANDBOX = 'https://www.paypal.com';
+
+// Popup domain needs to be different than native domain for app switch to work on iOS
 const NATIVE_POPUP_DOMAIN = 'https://ic.paypal.com';
-const NATIVE_POPUP_SANDBOX = 'https://www.sandbox.paypal.com';
+const NATIVE_POPUP_DOMAIN_SANDBOX = 'https://www.sandbox.paypal.com';
 
 type NativeSocketOptions = {|
     sessionUID : string,
@@ -196,7 +199,7 @@ type NativeSDKProps = {|
 |};
 
 function initNative({ props, components, config, payment, serviceData } : InitOptions) : PaymentFlowInstance {
-    const { createOrder, onApprove, onCancel, onError, commit, getPageUrl,
+    const { createOrder, onApprove, onCancel, onError, commit,
         buttonSessionID, env, stageHost, apiStageHost, onClick, onShippingChange } = props;
     const { facilitatorAccessToken, sdkMeta } = serviceData;
     const { fundingSource } = payment;
@@ -227,12 +230,14 @@ function initNative({ props, components, config, payment, serviceData } : InitOp
     };
 
     const getNativeDomain = memoize(() : string => {
-        return NATIVE_DOMAIN;
+        return (env === ENV.SANDBOX)
+            ? NATIVE_DOMAIN_SANDBOX
+            : NATIVE_DOMAIN;
     });
 
     const getNativePopupDomain = memoize(() : string => {
         return (env === ENV.SANDBOX)
-            ? NATIVE_POPUP_SANDBOX
+            ? NATIVE_POPUP_DOMAIN_SANDBOX
             : NATIVE_POPUP_DOMAIN;
     });
 
@@ -242,14 +247,14 @@ function initNative({ props, components, config, payment, serviceData } : InitOp
         });
     });
 
-    const getNativePopupUrl = memoize(() : string => {
+    const getNativePopupUrl = memoize(({ sessionUID }) : string => {
         return extendUrl(`${ getNativePopupDomain() }${ NATIVE_CHECKOUT_POPUP_URI[fundingSource] }`, {
-            query: { sdkMeta }
+            query: { sdkMeta, sessionUID }
         });
     });
 
     const getWebCheckoutUrl = memoize(({ orderID }) : string => {
-        return extendUrl(`${ getDomain() }${ WEB_CHECKOUT_URI }`, {
+        return extendUrl(`${ getNativeDomain() }${ WEB_CHECKOUT_URI }`, {
             query: {
                 fundingSource,
                 facilitatorAccessToken,
@@ -261,13 +266,11 @@ function initNative({ props, components, config, payment, serviceData } : InitOp
     });
 
     const getSDKProps = memoize(() : ZalgoPromise<NativeSDKProps> => {
-        return ZalgoPromise.hash({
-            orderID: createOrder(),
-            pageUrl: getPageUrl()
-        }).then(({ orderID, pageUrl }) => {
+        return createOrder().then(orderID => {
             const userAgent = getUserAgent();
             const webCheckoutUrl = getWebCheckoutUrl({ orderID });
             const forceEligible = isNativeOptedIn({ props });
+            const pageUrl = '';
 
             return {
                 orderID, facilitatorAccessToken, pageUrl, commit, webCheckoutUrl,
@@ -444,7 +447,7 @@ function initNative({ props, components, config, payment, serviceData } : InitOp
     };
 
     const initPopupAppSwitch = ({ sessionUID } : {| sessionUID : string |}) => {
-        const popupWin = popup(getNativePopupUrl());
+        const popupWin = popup(getNativePopupUrl({ sessionUID }));
 
         const closeListener = onCloseWindow(popupWin, () => {
             return ZalgoPromise.delay(1000).then(() => {

@@ -212,8 +212,8 @@ export function getMerchantID() : Promise<string> {
     return Promise.resolve('ABCDEF12345');
 }
 
-export function exchangeIDToken() : Promise<string> {
-    return Promise.resolve('ABCDEF12345');
+export function transportRiskData() : Promise<void> {
+    return Promise.resolve();
 }
 
 export const mockContent = {
@@ -224,7 +224,9 @@ export const mockContent = {
             chooseCardOrShipping: 'Choose card or shipping',
             useDifferentAccount:  'Use different account',
             deleteVaultedAccount: 'Forget this account',
-            deleteVaultedCard:    'Forget this card'
+            deleteVaultedCard:    'Forget this card',
+            chooseCard:           'Choose card',
+            balance:              'Balance'
         }
     }
 };

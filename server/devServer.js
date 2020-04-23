@@ -34,9 +34,11 @@ const graphQL = (req, payload) => {
     return Promise.resolve(payload.map(({ query }) => {
         if (query.match(/query GetFundingEligibility/)) {
             return {
-                fundingEligibility: {
-                    paypal: {
-                        eligible: true
+                result: {
+                    fundingEligibility: {
+                        paypal: {
+                            eligible: true
+                        }
                     }
                 }
             };
@@ -44,19 +46,21 @@ const graphQL = (req, payload) => {
 
         if (query.match(/query GetPersonalization/)) {
             return {
-                checkoutCustomization: {
-                    tagline: {
-                        text:     'Get $5 off your order!',
-                        tracking: {
-                            impression: 'http://www.paypal.com/tracking?foo=bar',
-                            click:      'http://www.paypal.com/tracking?foo=bar'
-                        }
-                    },
-                    buttonText: {
-                        text:     'PAY! {logo:pp} {logo:paypal} {logo:pp}',
-                        tracking: {
-                            impression: 'http://www.paypal.com/tracking?foo=bar',
-                            click:      'http://www.paypal.com/tracking?foo=bar'
+                result: {
+                    checkoutCustomization: {
+                        tagline: {
+                            text:     'Get $5 off your order!',
+                            tracking: {
+                                impression: 'http://www.paypal.com/tracking?foo=bar',
+                                click:      'http://www.paypal.com/tracking?foo=bar'
+                            }
+                        },
+                        buttonText: {
+                            text:     'PAY! {logo:pp} {logo:paypal} {logo:pp}',
+                            tracking: {
+                                impression: 'http://www.paypal.com/tracking?foo=bar',
+                                click:      'http://www.paypal.com/tracking?foo=bar'
+                            }
                         }
                     }
                 }
@@ -65,8 +69,10 @@ const graphQL = (req, payload) => {
 
         if (query.match(/query NativeEligibility/)) {
             return {
-                mobileSDKEligibility: {
-                    eligible: true
+                result: {
+                    mobileSDKEligibility: {
+                        eligible: true
+                    }
                 }
             };
         }
@@ -231,8 +237,8 @@ const getMerchantID = () => {
     return Promise.resolve('XYZ12345');
 };
 
-const exchangeIDToken = () => {
-    return Promise.resolve('XYZ12345');
+const transportRiskData = () => {
+    return Promise.resolve();
 };
 
 const content = {
@@ -243,7 +249,9 @@ const content = {
             chooseCardOrShipping: 'Choose card or shipping',
             useDifferentAccount:  'Use different account',
             deleteVaultedAccount: 'Forget this account',
-            deleteVaultedCard:    'Forget this card'
+            deleteVaultedCard:    'Forget this card',
+            chooseCard:           'Choose card',
+            balance:              'Balance'
         }
     }
 };
@@ -255,7 +263,7 @@ const buttonMiddleware = getButtonMiddleware({
     getWallet,
     getAccessToken,
     getMerchantID,
-    exchangeIDToken,
+    transportRiskData,
     content
 });
 

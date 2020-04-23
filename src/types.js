@@ -2,7 +2,7 @@
 
 import type { CrossDomainWindowType } from 'cross-domain-utils/src';
 import type { ZalgoPromise } from 'zalgo-promise/src';
-import { COUNTRY, LANG, FUNDING, CARD } from '@paypal/sdk-constants/src';
+import { COUNTRY, LANG, FUNDING, CARD, WALLET_INSTRUMENT } from '@paypal/sdk-constants/src';
 
 import { CONTEXT } from './constants';
 
@@ -207,82 +207,96 @@ export type FundingEligibilityType = {|
     |}
 |};
 
-export type ZoidComponent = {|
+export type ZoidComponentInstance<P> = {|
     render : (string, ?$Values<typeof CONTEXT>) => ZalgoPromise<void>,
     renderTo : (CrossDomainWindowType, string, ?$Values<typeof CONTEXT>) => ZalgoPromise<void>,
+    updateProps : (P) => ZalgoPromise<void>,
     close : () => ZalgoPromise<void>,
+    show : () => ZalgoPromise<void>,
+    hide : () => ZalgoPromise<void>,
     onError : (mixed) => ZalgoPromise<void>
 |};
 
-// eslint-disable-next-line flowtype/require-exact-type
-export type CheckoutFlowType = {
+export type ZoidComponent<P> = {|
     canRenderTo : (CrossDomainWindowType) => ZalgoPromise<boolean>,
-    ({|
-        window? : ?(ProxyWindow | CrossDomainWindowType),
-        sessionID : string,
-        buttonSessionID : string,
-        clientAccessToken? : ?string,
-        idToken? : string,
-        createOrder : () => ZalgoPromise<string>,
-        onApprove : ({| payerID : string, paymentID : ?string, billingToken : ?string, subscriptionID : ?string |}) => ZalgoPromise<void> | void,
-        onAuth : ({| accessToken : string |}) => ZalgoPromise<void> | void,
-        onCancel : () => ZalgoPromise<void> | void,
-        onShippingChange : ?({| |}, {| resolve : () => ZalgoPromise<void>, reject : () => ZalgoPromise<void> |}) => ZalgoPromise<void> | void,
-        onError : (mixed) => ZalgoPromise<void> | void,
-        onClose : () => ZalgoPromise<void> | void,
-        fundingSource : $Values<typeof FUNDING>,
-        card : ?$Values<typeof CARD>,
-        buyerCountry : $Values<typeof COUNTRY>,
-        locale : LocaleType,
-        commit : boolean,
-        cspNonce : ?string,
-        buyerAccessToken : ?string,
-        venmoPayloadID? : ?string
-    |}) : ZoidComponent
-};
+    (P): ZoidComponentInstance<P>
+|};
 
-// eslint-disable-next-line flowtype/require-exact-type
-export type CardFieldsFlowType = {
-    canRenderTo : (CrossDomainWindowType) => ZalgoPromise<boolean>,
-    ({|
-        window? : ?(ProxyWindow | CrossDomainWindowType),
-        sessionID : string,
-        buttonSessionID : string,
-        clientAccessToken? : ?string,
-        createOrder : () => ZalgoPromise<string>,
-        onApprove : ({| payerID : string, paymentID : ?string, billingToken : ?string, subscriptionID : ?string |}) => ZalgoPromise<void> | void,
-        onAuth : ({| accessToken : string |}) => ZalgoPromise<void> | void,
-        onCancel : () => ZalgoPromise<void> | void,
-        onError : (mixed) => ZalgoPromise<void> | void,
-        onClose : () => ZalgoPromise<void> | void,
-        onCardTypeChange : ({| card : $Values<typeof CARD> |}) => ZalgoPromise<void> | void,
-        fundingSource : $Values<typeof FUNDING>,
-        card : ?$Values<typeof CARD>,
-        buyerCountry : $Values<typeof COUNTRY>,
-        locale : LocaleType,
-        commit : boolean,
-        cspNonce : ?string
-    |}) : ZoidComponent
-};
+export type CheckoutProps = {|
+    window? : ?(ProxyWindow | CrossDomainWindowType),
+    sessionID : string,
+    buttonSessionID : string,
+    clientAccessToken? : ?string,
+    authCode? : string,
+    createOrder : () => ZalgoPromise<string>,
+    onApprove : ({| payerID : string, paymentID : ?string, billingToken : ?string, subscriptionID : ?string |}) => ZalgoPromise<void> | void,
+    onAuth : ({| accessToken : string |}) => ZalgoPromise<void> | void,
+    onCancel : () => ZalgoPromise<void> | void,
+    onShippingChange : ?({| |}, {| resolve : () => ZalgoPromise<void>, reject : () => ZalgoPromise<void> |}) => ZalgoPromise<void> | void,
+    onError : (mixed) => ZalgoPromise<void> | void,
+    onClose : () => ZalgoPromise<void> | void,
+    fundingSource : $Values<typeof FUNDING>,
+    card : ?$Values<typeof CARD>,
+    buyerCountry : $Values<typeof COUNTRY>,
+    locale : LocaleType,
+    commit : boolean,
+    cspNonce : ?string,
+    buyerAccessToken : ?string,
+    venmoPayloadID? : ?string
+|};
 
-// eslint-disable-next-line flowtype/require-exact-type
-export type ThreeDomainSecureFlowType = {
-    canRenderTo : (CrossDomainWindowType) => ZalgoPromise<boolean>,
-    ({|
-        createOrder : () => ZalgoPromise<string>,
-        onSuccess : () => ZalgoPromise<void> | void,
-        onCancel : () => ZalgoPromise<void> | void,
-        onError : (mixed) => ZalgoPromise<void> | void
-    |}) : ZoidComponent
-};
+export type CheckoutFlowType = ZoidComponent<CheckoutProps>;
 
-// eslint-disable-next-line flowtype/require-exact-type
-export type MenuFlowType = {
-    canRenderTo : (CrossDomainWindowType) => ZalgoPromise<boolean>,
-    ({|
-        clientID : string
-    |}) : ZoidComponent
-};
+export type CardFieldsProps = {|
+    window? : ?(ProxyWindow | CrossDomainWindowType),
+    sessionID : string,
+    buttonSessionID : string,
+    clientAccessToken? : ?string,
+    createOrder : () => ZalgoPromise<string>,
+    onApprove : ({| payerID : string, paymentID : ?string, billingToken : ?string, subscriptionID : ?string |}) => ZalgoPromise<void> | void,
+    onAuth : ({| accessToken : string |}) => ZalgoPromise<void> | void,
+    onCancel : () => ZalgoPromise<void> | void,
+    onError : (mixed) => ZalgoPromise<void> | void,
+    onClose : () => ZalgoPromise<void> | void,
+    onCardTypeChange : ({| card : $Values<typeof CARD> |}) => ZalgoPromise<void> | void,
+    fundingSource : $Values<typeof FUNDING>,
+    card : ?$Values<typeof CARD>,
+    buyerCountry : $Values<typeof COUNTRY>,
+    locale : LocaleType,
+    commit : boolean,
+    cspNonce : ?string
+|};
+
+export type CardFieldsFlowType = ZoidComponent<CardFieldsProps>;
+
+type ThreeDomainSecureProps = {|
+    createOrder : () => ZalgoPromise<string>,
+    onSuccess : () => ZalgoPromise<void> | void,
+    onCancel : () => ZalgoPromise<void> | void,
+    onError : (mixed) => ZalgoPromise<void> | void
+|};
+
+export type ThreeDomainSecureFlowType = ZoidComponent<ThreeDomainSecureProps>;
+
+export type MenuChoice = {|
+    label : string,
+    popup? : {|
+        width : number,
+        height : number
+    |},
+    spinner? : boolean,
+    onSelect : ({| win? : CrossDomainWindowType |}) => void | ZalgoPromise<void>
+|};
+
+export type MenuChoices = $ReadOnlyArray<MenuChoice>;
+
+export type MenuFlowProps = {|
+    clientID : string,
+    verticalOffset? : number,
+    choices? : MenuChoices
+|};
+
+export type MenuFlowType = ZoidComponent<MenuFlowProps>;
 
 export type ContentType = {|
     instantlyPayWith : string,
@@ -290,7 +304,9 @@ export type ContentType = {|
     chooseCardOrShipping : string,
     useDifferentAccount : string,
     deleteVaultedAccount : string,
-    deleteVaultedCard : string
+    deleteVaultedCard : string,
+    chooseCard : string,
+    balance : string
 |};
 
 export type PostRobot = {|
@@ -307,7 +323,7 @@ export type PayPal = {|
 |};
 
 export type WalletInstrument = {|
-    funding : $Values<typeof FUNDING>,
+    type? : $Values<typeof WALLET_INSTRUMENT>,
     label? : string,
     logoUrl? : string,
     instrumentID? : string,
@@ -323,5 +339,5 @@ export type WalletPaymentType = {|
 export type Wallet = {|
     paypal : WalletPaymentType,
     card : WalletPaymentType,
-    bank : WalletPaymentType
+    credit : WalletPaymentType
 |};
