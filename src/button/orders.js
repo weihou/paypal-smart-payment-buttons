@@ -5,7 +5,7 @@ import { INTENT, SDK_QUERY_KEYS, FUNDING, CURRENCY, ENV, FPTI_KEY } from '@paypa
 import { stringifyError, stringifyErrorMessage } from 'belter/src';
 
 import { INTEGRATION_ARTIFACT, USER_EXPERIENCE_FLOW, PRODUCT_FLOW, FPTI_CONTEXT_TYPE, FTPI_CUSTOM_KEY } from '../constants';
-import { updateClientConfig, getSupplementalOrderInfo } from '../api';
+import { updateClientConfig, getPayee, getSupplementalOrderInfo } from '../api';
 import { getLogger } from '../lib';
 import { CLIENT_ID_PAYEE_NO_MATCH, ORDER_VALIDATION_WHITELIST, SANDBOX_ORDER_VALIDATION_WHITELIST } from '../config';
 
@@ -27,10 +27,17 @@ type ValidateOptions = {|
     expectedCurrency : $Values<typeof CURRENCY>
 |};
 
+type Payee = {|
+    merchantId : ?string,
+    email : ?{|
+        stringValue : ?string
+    |}
+|};
+
 // check whether each merchantIdsOrEmails is in payees and each payee is in merchantIds
 // merchantIdsOrEmails is an arry of mixed merchant id and emails
 // payees is an array of payee object {merchant_id, email}
-const isValidMerchants = (merchantIdsOrEmails, payees) => {
+function isValidMerchants(merchantIdsOrEmails : $ReadOnlyArray<string>, payees : $ReadOnlyArray<Payee>) : boolean {
     if (merchantIdsOrEmails.length !== payees.length) {
         return false;
     }
@@ -70,10 +77,13 @@ const isValidMerchants = (merchantIdsOrEmails, payees) => {
         return (merchantIds.includes(payee.merchantId) || merchantEmails.includes(payee.email && payee.email.stringValue && payee.email.stringValue.toLowerCase()));
     });
     return foundPayee;
-};
+}
 
 export function validateOrder(orderID : string, { env, clientID, merchantID, expectedCurrency, expectedIntent } : ValidateOptions) : ZalgoPromise<void> {
-    return getSupplementalOrderInfo(orderID).then(order => {
+    return ZalgoPromise.hash({
+        order: getSupplementalOrderInfo(orderID),
+        payee: getPayee(orderID)
+    }).then(({ order, payee }) => {
         const cart = order.checkoutSession.cart;
 
         const intent = (cart.intent.toLowerCase() === 'sale') ? INTENT.CAPTURE : cart.intent.toLowerCase();
@@ -87,27 +97,32 @@ export function validateOrder(orderID : string, { env, clientID, merchantID, exp
             throw new Error(`Expected currency from order api call to be ${ expectedCurrency }, got ${ currency }. Please ensure you are passing ${ SDK_QUERY_KEYS.CURRENCY }=${ currency } to the sdk url. https://developer.paypal.com/docs/checkout/reference/customize-sdk/`);
         }
 
-        const payees = cart.payees;
-
         if (!merchantID || merchantID.length === 0) {
             throw new Error(`Could not determine correct merchant id`);
         }
 
-        if (!payees || payees.length === 0) {
-            throw new Error(`No payee found in transaction. Expected ${ merchantID.join() }`);
+        const payees = cart.payees || [];
+        const xpropMerchantID = window.xprops.merchantID;
+
+        if (payees.length === 0) {
+            // check payee returned from getPayee -> billing agreement transaction doesn't return payee in checkoutsession
+            const payeeMerchantID = payee && payee.merchant && payee.merchant.id;
+
+            if (!payeeMerchantID) {
+                throw new Error(`No payee found in transaction. Expected ${ merchantID.join() }`);
+            }
+            payees.push({ merchantId: payeeMerchantID });
         }
 
         if (!isValidMerchants(merchantID, payees)) {
             if (clientID && CLIENT_ID_PAYEE_NO_MATCH.indexOf(clientID) === -1) {
                 getLogger().info(`client_id_payee_no_match_${ clientID }`).flush();
-                // throw new Error(`Payee passed in transaction does not match expected merchant id: ${ merchantID.join() }`);
             }
         }
 
         // compare merchantID and payees
-        const xpropMerchantID = window.xprops.merchantID;
-        if (xpropMerchantID && xpropMerchantID.length > 0 && !isValidMerchants(window.xprops.merchantID, payees)) {
-            throw new Error(`Payee passed in transaction does not match expected merchant id: ${ window.xprops.merchantID }`);
+        if (xpropMerchantID && xpropMerchantID.length > 0 && !isValidMerchants(xpropMerchantID, payees)) {
+            throw new Error(`Payee passed in transaction does not match expected merchant id: ${ xpropMerchantID }`);
         }
     }).catch(err => {
         const isSandbox = (env === ENV.SANDBOX);
