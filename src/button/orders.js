@@ -27,13 +27,64 @@ type ValidateOptions = {|
     expectedCurrency : $Values<typeof CURRENCY>
 |};
 
+type Payee = {|
+    merchantId? : string,
+    email? : {|
+        stringValue? : string
+    |}
+|};
+
+// check whether each merchantIdsOrEmails is in payees and each payee is in merchantIds
+// merchantIdsOrEmails is an arry of mixed merchant id and emails
+// payees is an array of payee object {merchant_id, email}
+function isValidMerchants(merchantIdsOrEmails : $ReadOnlyArray<string>, payees : $ReadOnlyArray<Payee>) : boolean {
+    if (merchantIdsOrEmails.length !== payees.length) {
+        return false;
+    }
+
+    // split merchantIds into 2 arrays, one for emails and one for merchant ids
+    const merchantEmails = [];
+    const merchantIds = [];
+
+    merchantIdsOrEmails.forEach(id => {
+        if (id.indexOf('@') === -1) {
+            merchantIds.push(id);
+        } else {
+            merchantEmails.push(id.toLowerCase());
+        }
+    });
+
+    const foundEmail = merchantEmails.every(email => {
+        return payees.some(payee => {
+            return email === (payee.email && payee.email.stringValue && payee.email.stringValue.toLowerCase());
+        });
+    });
+
+    const foundMerchantId = merchantIds.every(id => {
+        return payees.some(payee => {
+            return (id === payee.merchantId);
+        });
+    });
+
+    // if the id or email is not in payees
+    if (!foundEmail || !foundMerchantId) {
+        return false;
+    }
+
+    // now check payees
+    // each payer should either has merchant_id in merchantIds or has email in merchantEmails
+    const foundPayee = payees.every(payee => {
+        return (merchantIds.includes(payee.merchantId) || merchantEmails.includes(payee.email && payee.email.stringValue && payee.email.stringValue.toLowerCase()));
+    });
+    return foundPayee;
+}
+
 export function validateOrder(orderID : string, { env, clientID, merchantID, expectedCurrency, expectedIntent } : ValidateOptions) : ZalgoPromise<void> {
     return ZalgoPromise.hash({
         order: getSupplementalOrderInfo(orderID),
         payee: getPayee(orderID)
     }).then(({ order, payee }) => {
         const cart = order.checkoutSession.cart;
-
         const intent = (cart.intent.toLowerCase() === 'sale') ? INTENT.CAPTURE : cart.intent.toLowerCase();
         const currency = cart.amounts && cart.amounts.total.currencyCode;
 
@@ -45,26 +96,28 @@ export function validateOrder(orderID : string, { env, clientID, merchantID, exp
             throw new Error(`Expected currency from order api call to be ${ expectedCurrency }, got ${ currency }. Please ensure you are passing ${ SDK_QUERY_KEYS.CURRENCY }=${ currency } to the sdk url. https://developer.paypal.com/docs/checkout/reference/customize-sdk/`);
         }
 
-        const payeeMerchantID = payee && payee.merchant && payee.merchant.id;
-        const actualMerchantID = merchantID && merchantID.length && merchantID[0];
-
-        if (!actualMerchantID) {
+        if (!merchantID || merchantID.length === 0) {
             throw new Error(`Could not determine correct merchant id`);
         }
 
+        const payeeMerchantID = payee && payee.merchant && payee.merchant.id;
+        
         if (!payeeMerchantID) {
-            throw new Error(`No payee found in transaction. Expected ${ actualMerchantID }`);
+            throw new Error(`No payee found in transaction. Expected ${ merchantID.join() }`);
         }
 
-        if (payeeMerchantID !== actualMerchantID) {
+        // get payees from xosession or extended-payee (for Billing Agreement)
+        const payees = cart.payees || [ { merchantId: payeeMerchantID } ];
+        const xpropMerchantID = window.xprops.merchantID;
+
+        if (!isValidMerchants(merchantID, payees)) {
             if (clientID && CLIENT_ID_PAYEE_NO_MATCH.indexOf(clientID) === -1) {
-                getLogger().info(`client_id_payee_no_match`).flush();
-                // throw new Error(`Payee passed in transaction does not match expected merchant id: ${ actualMerchantID }`);
+                getLogger().info(`client_id_payee_no_match_${ clientID }`).flush();
             }
         }
 
-        const xpropMerchantID = window.xprops.merchantID && window.xprops.merchantID[0];
-        if (xpropMerchantID && payeeMerchantID !== xpropMerchantID) {
+        // compare merchantID and payees
+        if (xpropMerchantID && xpropMerchantID.length > 0 && !isValidMerchants(xpropMerchantID, payees)) {
             throw new Error(`Payee passed in transaction does not match expected merchant id: ${ xpropMerchantID }`);
         }
     }).catch(err => {
