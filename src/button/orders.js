@@ -74,7 +74,7 @@ function isValidMerchants(merchantIdsOrEmails : $ReadOnlyArray<string>, payees :
     // now check payees
     // each payer should either has merchant_id in merchantIds or has email in merchantEmails
     const foundPayee = payees.every(payee => {
-        return (merchantIds.includes(payee.merchantId) || merchantEmails.includes(payee.email && payee.email.stringValue && payee.email.stringValue.toLowerCase()));
+        return (merchantIds.indexOf(payee.merchantId) > -1 || merchantEmails.indexOf(payee.email && payee.email.stringValue && payee.email.stringValue.toLowerCase()) > -1);
     });
     return foundPayee;
 }
