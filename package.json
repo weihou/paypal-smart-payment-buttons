@@ -1,6 +1,6 @@
 {
-  "name": "@paypal/smart-payment-buttons",
-  "version": "2.0.257",
+  "name": "@paypal/smart-payment-buttons-pre-release",
+  "version": "2.0.258-alpha.2",
   "publishConfig": {
     "registry": "https://registry.npmjs.com"
   },
@@ -22,7 +22,7 @@
     "karma": "cross-env NODE_ENV=test babel-node --plugins=transform-es2015-modules-commonjs ./node_modules/.bin/karma start",
     "babel": "babel server --ignore=node_modules --out-dir server && babel webpack.config.js globals.js --out-dir .",
     "webpack": "babel-node --plugins=transform-es2015-modules-commonjs ./node_modules/.bin/webpack --progress",
-    "test": "if [ ! $SKIP_TEST ]; then npm run lint && npm run flow-typed && npm run flow check && npm run karma && npm run jest; fi;",
+    "test": "if [ ! $SKIP_TEST ]; then npm run flow-typed && npm run flow check && npm run karma && npm run jest; fi;",
     "build": "npm run test && npm run webpack",
     "release": "./publish.sh",
     "release:patch": "./publish.sh patch",
