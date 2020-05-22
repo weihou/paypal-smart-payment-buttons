@@ -243,21 +243,21 @@ describe('vault cases', () => {
                                         currencyCode: 'USD'
                                     }
                                 },
-                                payees: [
-                                    {
-                                        merchantId: 'XYZ12345',
-                                        email:       {
-                                            stringValue: 'xyz-us-b1@paypal.com'
-                                        }
-                                    }
-                                ],
                                 shippingAddress: {
                                     isFullAddress: false
                                 }
                             },
                             flags: {
                                 isShippingAddressRequired: false
-                            }
+                            },
+                            payees: [
+                                {
+                                    merchantId: 'XYZ12345',
+                                    email:       {
+                                        stringValue: 'xyz-us-b1@paypal.com'
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -320,21 +320,21 @@ describe('vault cases', () => {
                                         currencyCode: 'USD'
                                     }
                                 },
-                                payees: [
-                                    {
-                                        merchantId: 'XYZ12345',
-                                        email:       {
-                                            stringValue: 'xyz-us-b1@paypal.com'
-                                        }
-                                    }
-                                ],
                                 shippingAddress: {
                                     isFullAddress: false
                                 }
                             },
                             flags: {
                                 isShippingAddressRequired: false
-                            }
+                            },
+                            payees: [
+                                {
+                                    merchantId: 'XYZ12345',
+                                    email:       {
+                                        stringValue: 'xyz-us-b1@paypal.com'
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -407,21 +407,21 @@ describe('vault cases', () => {
                                         currencyCode: 'USD'
                                     }
                                 },
-                                payees: [
-                                    {
-                                        merchantId: 'XYZ12345',
-                                        email:       {
-                                            stringValue: 'xyz-us-b1@paypal.com'
-                                        }
-                                    }
-                                ],
                                 shippingAddress: {
                                     isFullAddress: true
                                 }
                             },
                             flags: {
                                 isShippingAddressRequired: true
-                            }
+                            },
+                            payees: [
+                                {
+                                    merchantId: 'XYZ12345',
+                                    email:       {
+                                        stringValue: 'xyz-us-b1@paypal.com'
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -484,21 +484,21 @@ describe('vault cases', () => {
                                         currencyCode: 'USD'
                                     }
                                 },
-                                payees: [
-                                    {
-                                        merchantId: 'XYZ12345',
-                                        email:       {
-                                            stringValue: 'xyz-us-b1@paypal.com'
-                                        }
-                                    }
-                                ],
                                 shippingAddress: {
                                     isFullAddress: true
                                 }
                             },
                             flags: {
                                 isShippingAddressRequired: true
-                            }
+                            },
+                            payees: [
+                                {
+                                    merchantId: 'XYZ12345',
+                                    email:       {
+                                        stringValue: 'xyz-us-b1@paypal.com'
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -571,21 +571,21 @@ describe('vault cases', () => {
                                         currencyCode: 'USD'
                                     }
                                 },
-                                payees: [
-                                    {
-                                        merchantId: 'XYZ12345',
-                                        email:       {
-                                            stringValue: 'xyz-us-b1@paypal.com'
-                                        }
-                                    }
-                                ],
                                 shippingAddress: {
                                     isFullAddress: false
                                 }
                             },
                             flags: {
                                 isShippingAddressRequired: true
-                            }
+                            },
+                            payees: [
+                                {
+                                    merchantId: 'XYZ12345',
+                                    email:       {
+                                        stringValue: 'xyz-us-b1@paypal.com'
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -650,21 +650,21 @@ describe('vault cases', () => {
                                         currencyCode: 'USD'
                                     }
                                 },
-                                payees: [
-                                    {
-                                        merchantId: 'XYZ12345',
-                                        email:       {
-                                            stringValue: 'xyz-us-b1@paypal.com'
-                                        }
-                                    }
-                                ],
                                 shippingAddress: {
                                     isFullAddress: false
                                 }
                             },
                             flags: {
                                 isShippingAddressRequired: true
-                            }
+                            },
+                            payees: [
+                                {
+                                    merchantId: 'XYZ12345',
+                                    email:       {
+                                        stringValue: 'xyz-us-b1@paypal.com'
+                                    }
+                                }
+                            ]
                         }
                     }
                 }

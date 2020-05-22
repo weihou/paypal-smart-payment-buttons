@@ -481,16 +481,16 @@ export function getGraphQLApiMock(options : Object = {}) : MockEndpoint {
                                     total: {
                                         currencyCode: 'USD'
                                     }
-                                },
-                                payees: [
-                                    {
-                                        merchantId: 'XYZ12345',
-                                        email:       {
-                                            stringValue: 'xyz-us-b1@paypal.com'
-                                        }
+                                }
+                            },
+                            payees: [
+                                {
+                                    merchantId: 'XYZ12345',
+                                    email:       {
+                                        stringValue: 'xyz-us-b1@paypal.com'
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     }
                 };
@@ -551,22 +551,6 @@ export function getValidatePaymentMethodApiMock(options : Object = {}) : MockEnd
     });
 }
 
-export function getPayeeApiMock(options : Object = {}) : MockEndpoint {
-    return $mockEndpoint.register({
-        method: 'GET',
-        uri:    new RegExp('/smart/api/checkout/[^/]+/payee'),
-        data:   {
-            ack:  'success',
-            data: {
-                merchant: {
-                    id: 'XYZ12345'
-                }
-            }
-        },
-        ...options
-    });
-}
-
 getCreateAccessTokenMock().listen();
 getCreateOrderApiMock().listen();
 getGetOrderApiMock().listen();
@@ -578,7 +562,6 @@ getSubscriptionIdToCartIdApiMock().listen();
 getGraphQLApiMock().listen();
 getLoggerApiMock().listen();
 getValidatePaymentMethodApiMock().listen();
-getPayeeApiMock().listen();
 
 type NativeMockWebSocket = {|
     expect : () => {|
