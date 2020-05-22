@@ -256,16 +256,16 @@ describe('actions cases', () => {
                                         total: {
                                             currencyCode: 'USD'
                                         }
-                                    },
-                                    payees: [
-                                        {
-                                            merchantId: 'XYZ12345',
-                                            email:      {
-                                                stringValue: 'xyz-us-b1@paypal.com'
-                                            }
+                                    }
+                                },
+                                payees: [
+                                    {
+                                        merchantId: 'XYZ12345',
+                                        email:      {
+                                            stringValue: 'xyz-us-b1@paypal.com'
                                         }
-                                    ]
-                                }
+                                    }
+                                ]
                             }
                         }
                     };
@@ -601,16 +601,16 @@ describe('actions cases', () => {
                                         total: {
                                             currencyCode: 'USD'
                                         }
-                                    },
-                                    payees: [
-                                        {
-                                            merchantId: 'XYZ12345',
-                                            email:      {
-                                                stringValue: 'xyz-us-b1@paypal.com'
-                                            }
+                                    }
+                                },
+                                payees: [
+                                    {
+                                        merchantId: 'XYZ12345',
+                                        email:      {
+                                            stringValue: 'xyz-us-b1@paypal.com'
                                         }
-                                    ]
-                                }
+                                    }
+                                ]
                             }
                         }
                     };
@@ -718,22 +718,22 @@ describe('actions cases', () => {
                                         total: {
                                             currencyCode: 'USD'
                                         }
-                                    },
-                                    payees: [
-                                        {
-                                            merchantId: 'XYZ12345',
-                                            email:      {
-                                                stringValue: 'xyz-us-b1@paypal.com'
-                                            }
-                                        },
-                                        {
-                                            merchantId: null,
-                                            email:      {
-                                                stringValue: 'ABC12345@paypal.com'
-                                            }
+                                    }
+                                },
+                                payees: [
+                                    {
+                                        merchantId: 'XYZ12345',
+                                        email:      {
+                                            stringValue: 'xyz-us-b1@paypal.com'
                                         }
-                                    ]
-                                }
+                                    },
+                                    {
+                                        merchantId: null,
+                                        email:      {
+                                            stringValue: 'ABC12345@paypal.com'
+                                        }
+                                    }
+                                ]
                             }
                         }
                     };
@@ -827,9 +827,14 @@ describe('actions cases', () => {
                         data: {
                             checkoutSession: {
                                 cart: {
-                                    intent:  INTENT.AUTHORIZE,
-                                    payees: null
-                                }
+                                    intent: INTENT.AUTHORIZE
+                                },
+                                payees: [
+                                    {
+                                        merchantId: 'XYZ12345',
+                                        email:      null
+                                    }
+                                ]
                             }
                         }
                     };

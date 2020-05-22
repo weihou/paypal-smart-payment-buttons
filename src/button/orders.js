@@ -5,7 +5,7 @@ import { INTENT, SDK_QUERY_KEYS, FUNDING, CURRENCY, ENV, FPTI_KEY } from '@paypa
 import { stringifyError, stringifyErrorMessage } from 'belter/src';
 
 import { INTEGRATION_ARTIFACT, USER_EXPERIENCE_FLOW, PRODUCT_FLOW, FPTI_CONTEXT_TYPE, FTPI_CUSTOM_KEY } from '../constants';
-import { updateClientConfig, getPayee, getSupplementalOrderInfo } from '../api';
+import { updateClientConfig, getSupplementalOrderInfo } from '../api';
 import { getLogger } from '../lib';
 import { CLIENT_ID_PAYEE_NO_MATCH, ORDER_VALIDATION_WHITELIST, SANDBOX_ORDER_VALIDATION_WHITELIST } from '../config';
 
@@ -80,10 +80,7 @@ function isValidMerchants(merchantIdsOrEmails : $ReadOnlyArray<string>, payees :
 }
 
 export function validateOrder(orderID : string, { env, clientID, merchantID, expectedCurrency, expectedIntent } : ValidateOptions) : ZalgoPromise<void> {
-    return ZalgoPromise.hash({
-        order: getSupplementalOrderInfo(orderID),
-        payee: getPayee(orderID)
-    }).then(({ order, payee }) => {
+    return getSupplementalOrderInfo(orderID).then(order => {
         const cart = order.checkoutSession.cart;
         const intent = (cart.intent.toLowerCase() === 'sale') ? INTENT.CAPTURE : cart.intent.toLowerCase();
         const currency = cart.amounts && cart.amounts.total.currencyCode;
@@ -100,14 +97,13 @@ export function validateOrder(orderID : string, { env, clientID, merchantID, exp
             throw new Error(`Could not determine correct merchant id`);
         }
 
-        const payeeMerchantID = payee && payee.merchant && payee.merchant.id;
+        // get payees from xosession or extended-payee (for Billing Agreement)
+        const payees = order.checkoutSession.payees;
         
-        if (!payeeMerchantID) {
+        if (!payees || payees.length === 0) {
             throw new Error(`No payee found in transaction. Expected ${ merchantID.join() }`);
         }
 
-        // get payees from xosession or extended-payee (for Billing Agreement)
-        const payees = cart.payees || [ { merchantId: payeeMerchantID } ];
         const xpropMerchantID = window.xprops.merchantID;
 
         if (!isValidMerchants(merchantID, payees)) {
