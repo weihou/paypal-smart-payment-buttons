@@ -1,15 +1,13 @@
 /* @flow */
 /* eslint max-depth: off */
 
+import type { FundingEligibilityType } from '@paypal/sdk-client/src';
 import { ENV, COUNTRY, CURRENCY, INTENT, COMMIT, VAULT, CARD, FUNDING, DEFAULT_COUNTRY, COUNTRY_LANGS } from '@paypal/sdk-constants';
 import { values } from 'belter';
 
 import { HTTP_HEADER, ERROR_CODE } from '../../config';
-import type { FundingEligibility } from '../../service';
-import type { ExpressRequest, ExpressResponse, LocaleType } from '../../types';
+import type { ExpressRequest, ExpressResponse, LocaleType, RiskData } from '../../types';
 import { makeError } from '../../lib';
-
-export type RiskData = {||};
 
 type StyleType = {|
     label? : string,
@@ -59,7 +57,7 @@ type RequestParams = {|
     buttonSessionID : string,
     clientAccessToken : ?string,
     cspNonce : string,
-    basicFundingEligibility : FundingEligibility,
+    basicFundingEligibility : FundingEligibilityType,
     locale : LocaleType,
     debug : boolean,
     style : Style,
@@ -81,7 +79,7 @@ function getCSPNonce(res : ExpressResponse) : string {
     return nonce;
 }
 
-function getFundingEligibilityParam(req : ExpressRequest) : FundingEligibility {
+function getFundingEligibilityParam(req : ExpressRequest) : FundingEligibilityType {
     const encodedFundingEligibility = req.query.fundingEligibility;
 
     if (encodedFundingEligibility && typeof encodedFundingEligibility === 'string') {
@@ -139,11 +137,9 @@ function getFundingEligibilityParam(req : ExpressRequest) : FundingEligibility {
             }
         }
 
-        // $FlowFixMe
         return fundingEligibility;
     }
-
-    // $FlowFixMe
+    
     return {
         [ FUNDING.PAYPAL ]: {
             eligible: true
@@ -161,7 +157,7 @@ function getRiskDataParam(req : ExpressRequest) : ?RiskData {
     try {
         return JSON.parse(Buffer.from(serializedRiskData, 'base64').toString('utf8'));
     } catch (err) {
-        throw new makeError(ERROR_CODE.VALIDATION_ERROR, `Invalid risk data: ${ serializedRiskData }`, err);
+        // pass
     }
 }
 
