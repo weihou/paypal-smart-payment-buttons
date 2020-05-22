@@ -1610,14 +1610,14 @@
             }));
         }
         var getSupplementalOrderInfo = memoize((function(orderID) {
-            var _headers17;
+            var _headers16;
             return callGraphQL({
                 name: "GetCheckoutDetails",
-                query: "\n            query GetCheckoutDetails($orderID: String!) {\n                checkoutSession(token: $orderID) {\n                    cart {\n                        intent\n                        paymentId\n                        billingToken\n                        amounts {\n                            total {\n                                currencyCode\n                            }\n                        }\n                        shippingAddress {\n                            isFullAddress\n                        },\n                        payees {\n                            merchantId\n                            email {\n                                stringValue\n                            }\n                        }\n                    }\n                    flags {\n                        hideShipping\n                        isShippingAddressRequired\n                        isChangeShippingAddressAllowed\n                    }\n                }\n            }\n        ",
+                query: "\n            query GetCheckoutDetails($orderID: String!) {\n                checkoutSession(token: $orderID) {\n                    cart {\n                        intent\n                        paymentId\n                        billingToken\n                        amounts {\n                            total {\n                                currencyCode\n                            }\n                        }\n                        shippingAddress {\n                            isFullAddress\n                        }\n                    }\n                    flags {\n                        hideShipping\n                        isShippingAddressRequired\n                        isChangeShippingAddressAllowed\n                    },\n                    payees {\n                        merchantId\n                        email {\n                            stringValue\n                        }\n                    }\n                }\n            }\n        ",
                 variables: {
                     orderID: orderID
                 },
-                headers: (_headers17 = {}, _headers17["paypal-client-context"] = orderID, _headers17)
+                headers: (_headers16 = {}, _headers16["paypal-client-context"] = orderID, _headers16)
             });
         }));
         memoize((function(config) {
@@ -2446,7 +2446,7 @@
                             var planID = _ref.checkoutSession.fundingOptions[0].allPlans[0].id;
                             return (0, props.createOrder)().then((function(orderID) {
                                 return function(_ref10) {
-                                    var _headers15;
+                                    var _headers14;
                                     var orderID = _ref10.orderID;
                                     return callGraphQL({
                                         name: "ApproveOrder",
@@ -2455,8 +2455,8 @@
                                             orderID: orderID,
                                             planID: _ref10.planID
                                         },
-                                        headers: (_headers15 = {}, _headers15["x-paypal-internal-euat"] = _ref10.buyerAccessToken, 
-                                        _headers15["paypal-client-context"] = orderID, _headers15)
+                                        headers: (_headers14 = {}, _headers14["x-paypal-internal-euat"] = _ref10.buyerAccessToken, 
+                                        _headers14["paypal-client-context"] = orderID, _headers14)
                                     }).then((function(_ref11) {
                                         return {
                                             payerID: _ref11.approvePayment.buyer.userId
