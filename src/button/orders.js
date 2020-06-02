@@ -98,7 +98,7 @@ export function validateOrder(orderID : string, { env, clientID, merchantID, exp
             throw new Error(`Could not determine correct merchant id`);
         }
 
-        const payees = order.checkoutSession.cart && order.checkoutSession.cart.payees;
+        const payees = order.checkoutSession.payees;
 
         if (!payees) {
             return getLogger().warn(`supplemental_order_missing_payees`).flush();
