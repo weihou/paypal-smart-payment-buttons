@@ -10,7 +10,7 @@ import { type CrossDomainWindowType, isWindowClosed, onCloseWindow, getDomain } 
 import type { ButtonProps } from '../button/props';
 import { NATIVE_CHECKOUT_URI, WEB_CHECKOUT_URI, NATIVE_CHECKOUT_POPUP_URI } from '../config';
 import { firebaseSocket, type MessageSocket, type FirebaseConfig } from '../api';
-import { getLogger, promiseOne, promiseNoop } from '../lib';
+import { getLogger, promiseOne, promiseNoop, unresolvedPromise } from '../lib';
 import { USER_ACTION, FPTI_TRANSITION } from '../constants';
 
 import type { PaymentFlow, PaymentFlowInstance, SetupOptions, IsEligibleOptions, IsPaymentEligibleOptions, InitOptions } from './types';
@@ -230,12 +230,20 @@ function initNative({ props, components, config, payment, serviceData } : InitOp
     };
 
     const getNativeDomain = memoize(() : string => {
+        if (env === ENV.SANDBOX && window.xprops && window.xprops.useCorrectNativeSandboxDomain) {
+            return 'https://www.sandbox.paypal.com';
+        }
+
         return (env === ENV.SANDBOX)
             ? NATIVE_DOMAIN_SANDBOX
             : NATIVE_DOMAIN;
     });
 
     const getNativePopupDomain = memoize(() : string => {
+        if (env === ENV.SANDBOX && window.xprops && window.xprops.useCorrectNativeSandboxDomain) {
+            return 'https://history.paypal.com';
+        }
+
         return (env === ENV.SANDBOX)
             ? NATIVE_POPUP_DOMAIN_SANDBOX
             : NATIVE_POPUP_DOMAIN;
@@ -415,7 +423,7 @@ function initNative({ props, components, config, payment, serviceData } : InitOp
 
         const detectWebSwitchListener = listen(nativeWin, getNativeDomain(), POST_MESSAGE.DETECT_WEB_SWITCH, () => {
             getLogger().info(`native_post_message_detect_web_switch`).flush();
-            return detectWebSwitch(nativeWin);
+            return detectWebSwitch(nativeWin).then(unresolvedPromise);
         });
 
         clean.register(detectWebSwitchListener.cancel);

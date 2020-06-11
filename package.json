@@ -1,6 +1,6 @@
 {
   "name": "@paypal/smart-payment-buttons",
-  "version": "2.0.268",
+  "version": "2.0.274",
   "publishConfig": {
     "registry": "https://registry.npmjs.com"
   },
@@ -42,8 +42,8 @@
   "dependencies": {
     "@paypal/checkout-components": "^5.0.30",
     "@paypal/common-components": "^1.0.10",
-    "@paypal/sdk-client": "^4.0.122",
-    "@paypal/sdk-constants": "^1.0.52",
+    "@paypal/sdk-client": "^4.0.123",
+    "@paypal/sdk-constants": "^1.0.57",
     "@paypal/sdk-logos": "^1.0.26",
     "beaver-logger": "^4.0.12",
     "belter": "^1.0.19",
@@ -62,7 +62,7 @@
     "flow-bin": "^0.110.1",
     "grumbler-scripts": "^3.0.18",
     "post-robot": "^10.0.13",
-    "sync-browser-mocks": "^2.0.1",
+    "sync-browser-mocks": "^2.0.8",
     "webpack-mem-compile": "^1.0.2"
   },
   "license": "PayPal",

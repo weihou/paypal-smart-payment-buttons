@@ -237,10 +237,12 @@ type OnApproveXProps = {|
     onApprove : ?XOnApprove,
     partnerAttributionID : ?string,
     onError : XOnError,
-    upgradeLSAT : boolean
+    upgradeLSAT : boolean,
+    clientAccessToken : ?string,
+    vault : boolean
 |};
 
-export function getOnApprove({ intent, onApprove = getDefaultOnApprove(intent), partnerAttributionID, onError, upgradeLSAT = false } : OnApproveXProps, { facilitatorAccessToken, createOrder } : {| facilitatorAccessToken : string, createOrder : CreateOrder |}) : OnApprove {
+export function getOnApprove({ intent, onApprove = getDefaultOnApprove(intent), partnerAttributionID, onError, clientAccessToken, vault, upgradeLSAT = false } : OnApproveXProps, { facilitatorAccessToken, createOrder } : {| facilitatorAccessToken : string, createOrder : CreateOrder |}) : OnApprove {
     if (!onApprove) {
         throw new Error(`Expected onApprove`);
     }
@@ -262,14 +264,16 @@ export function getOnApprove({ intent, onApprove = getDefaultOnApprove(intent), 
                     [FPTI_KEY.CONTEXT_ID]:   orderID
                 }).flush();
 
-            if (!payerID) {
-                getSupplementalOrderInfo.reset();
+            if (!billingToken && !subscriptionID && !clientAccessToken && !vault) {
+                if (!payerID) {
+                    getLogger().error('onapprove_payerid_not_present', { orderID }).flush();
+                    // throw new Error(`payerID not present in onApprove call`);
+                }
             }
 
             return getSupplementalOrderInfo(orderID).then(supplementalData => {
                 intent = intent || (supplementalData && supplementalData.checkoutSession && supplementalData.checkoutSession.cart && supplementalData.checkoutSession.cart.intent);
                 billingToken = billingToken || (supplementalData && supplementalData.checkoutSession && supplementalData.checkoutSession.cart && supplementalData.checkoutSession.cart.billingToken);
-                payerID = payerID || (supplementalData && supplementalData.checkoutSession && supplementalData.checkoutSession.buyer && supplementalData.checkoutSession.buyer.userId);
                 
                 const data = { orderID, payerID, paymentID, billingToken, subscriptionID, facilitatorAccessToken, authCode };
                 const actions = buildXApproveActions({ orderID, paymentID, payerID, intent, restart, subscriptionID, facilitatorAccessToken, buyerAccessToken, partnerAttributionID, forceRestAPI });

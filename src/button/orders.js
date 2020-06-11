@@ -163,6 +163,10 @@ export function validateOrder(orderID : string, { env, clientID, merchantID, exp
                 getLogger().warn(`derived_payee_transaction_mismatch`, { payees: JSON.stringify(uniquePayees), merchantID: JSON.stringify(merchantID) }).flush();
 
                 if (uniquePayees.length === 1) {
+                    if (env === ENV.SANDBOX) {
+                        getLogger().warn(`derived_payee_transaction_mismatch_sandbox`, { payees: JSON.stringify(payees), merchantID: JSON.stringify(merchantID) }).flush();
+                    }
+
                     // eslint-disable-next-line no-console
                     console.warn(`Payee(s) passed in transaction does not match expected merchant id. Please ensure you are passing ${ SDK_QUERY_KEYS.MERCHANT_ID }=${ payeesStr } or ${ SDK_QUERY_KEYS.MERCHANT_ID }=${ (uniquePayees[0] && uniquePayees[0].email && uniquePayees[0].email.stringValue) ? uniquePayees[0].email.stringValue : 'payee@merchant.com' } to the sdk url. https://developer.paypal.com/docs/checkout/reference/customize-sdk/`);
                 } else {

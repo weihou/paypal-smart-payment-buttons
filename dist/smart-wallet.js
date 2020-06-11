@@ -198,13 +198,13 @@
             return insertCss(content, options);
         };
     }, function(module, exports, __webpack_require__) {
-        (exports = __webpack_require__(0)(!1)).push([ module.i, ".wallet-item[data-v-fdd787a1]{cursor:pointer;width:100%;display:flex;justify-content:flex-start;align-items:center;padding:0 20px;box-sizing:border-box;transition:background-color 0.3s ease-in-out;height:60px}@media only screen and (max-width: 600px){.wallet-item[data-v-fdd787a1]{height:50px}}.wallet-item .icon[data-v-fdd787a1]{display:inline-block;vertical-align:top;text-align:center;width:50px;margin-right:20px}.wallet-item .icon img[data-v-fdd787a1]{max-height:90%;max-width:90%}.wallet-item .description[data-v-fdd787a1]{display:inline-block;vertical-align:top}.wallet-item .description .name[data-v-fdd787a1]{font-size:16px;margin-bottom:5px}@media only screen and (max-width: 600px){.wallet-item .description .name[data-v-fdd787a1]{font-size:13px}}.wallet-item .description .details[data-v-fdd787a1]{color:#6c7378;font-size:14px}@media only screen and (max-width: 600px){.wallet-item .description .details[data-v-fdd787a1]{font-size:12px}}.wallet-item .preferred[data-v-fdd787a1]{background-color:#eaf7e9;color:#2d542b;font-size:10px;padding:2px 5px;border-radius:3px;margin:0 5px}.wallet-item[data-v-fdd787a1]:hover{background-color:#eee}\n", "" ]);
+        (exports = __webpack_require__(0)(!1)).push([ module.i, ".wallet-item[data-v-d2ff3bcf]{cursor:pointer;width:100%;display:flex;justify-content:flex-start;align-items:center;padding:0 20px;box-sizing:border-box;transition:background-color 0.3s ease-in-out;height:60px}@media only screen and (max-width: 600px){.wallet-item[data-v-d2ff3bcf]{height:50px}}.wallet-item .icon[data-v-d2ff3bcf]{display:inline-block;vertical-align:top;text-align:center;width:50px;margin-right:20px}.wallet-item .icon img[data-v-d2ff3bcf]{max-height:90%;max-width:90%}.wallet-item .description[data-v-d2ff3bcf]{display:inline-block;vertical-align:top}.wallet-item .description .name[data-v-d2ff3bcf]{font-size:16px;margin-bottom:5px}@media only screen and (max-width: 600px){.wallet-item .description .name[data-v-d2ff3bcf]{font-size:13px}}.wallet-item .description .details[data-v-d2ff3bcf]{color:#6c7378;font-size:14px}@media only screen and (max-width: 600px){.wallet-item .description .details[data-v-d2ff3bcf]{font-size:12px}}.wallet-item .preferred[data-v-d2ff3bcf]{background-color:#eaf7e9;color:#2d542b;font-size:10px;padding:2px 5px;border-radius:3px;margin:0 5px}.wallet-item[data-v-d2ff3bcf]:hover{background-color:#eee}\n", "" ]);
         module.exports = exports;
     }, function(module, exports, __webpack_require__) {
         (exports = __webpack_require__(0)(!1)).push([ module.i, "", "" ]);
         module.exports = exports;
     }, function(module, exports, __webpack_require__) {
-        (exports = __webpack_require__(0)(!1)).push([ module.i, ".add-card-button[data-v-d2ff3bcf]{padding:20px}.add-card-button a[data-v-d2ff3bcf]{color:#007ab7;font-weight:400;font-size:16px;text-decoration:none}.add-card-button a[data-v-d2ff3bcf]:hover{text-decoration:underline}\n", "" ]);
+        (exports = __webpack_require__(0)(!1)).push([ module.i, ".add-card-button[data-v-fdd787a1]{padding:20px}.add-card-button a[data-v-fdd787a1]{color:#007ab7;font-weight:400;font-size:16px;text-decoration:none}.add-card-button a[data-v-fdd787a1]:hover{text-decoration:underline}\n", "" ]);
         module.exports = exports;
     }, function(module, exports, __webpack_require__) {
         (exports = __webpack_require__(0)(!1)).push([ module.i, "html,body{margin:0;width:100%;overflow:hidden;font-family:Helvetica Neue, HelveticaNeue, HelveticaNeue-Light, Helvetica Neue Light, helvetica, arial, sans-serif}*{box-sizing:border-box}.flex-spacer{flex:1}\n", "" ]);
@@ -462,7 +462,7 @@
             var t = "";
             for (var r in e) {
                 var o = e[r];
-                null != o && (t && (t += " "), t += index_module_l[r] || (index_module_l[r] = r.replace(/([A-Z])/g, "-$1").toLowerCase()), 
+                null != o && (t && (t += " "), t += "-" == r[0] ? r : index_module_l[r] || (index_module_l[r] = r.replace(/([A-Z])/g, "-$1").toLowerCase()), 
                 t += ": ", t += o, "number" == typeof o && !1 === index_module_n.test(r) && (t += "px"), 
                 t += ";");
             }
@@ -478,7 +478,7 @@
         }
         var index_module_p = {
             shallow: !0
-        }, index_module_u = [], index_module_g = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/, index_module_ = function() {};
+        }, index_module_u = [], index_module_ = /^(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/, index_module_g = function() {};
         index_module_v.render = index_module_v;
         function index_module_v(n, l, p, h, d, m) {
             if (null == n || "boolean" == typeof n) return "";
@@ -499,8 +499,8 @@
                         __v: n,
                         context: l,
                         props: n.props,
-                        setState: index_module_,
-                        forceUpdate: index_module_,
+                        setState: index_module_g,
+                        forceUpdate: index_module_g,
                         __h: []
                     };
                     if (preact_module_n.__r && preact_module_n.__r(n), x.prototype && "function" == typeof x.prototype.render) {
@@ -535,7 +535,7 @@
                 p && !0 === p.sortAttributes && P.sort();
                 for (var R = 0; R < P.length; R++) {
                     var U = P[R], W = y[U];
-                    if ("children" !== U && !U.match(/[\s\n\\/='"\0<>]/) && (p && p.allAttributes || "key" !== U && "ref" !== U)) {
+                    if ("children" !== U && !U.match(/[\s\n\\/='"\0<>]/) && (p && p.allAttributes || "key" !== U && "ref" !== U && "__self" !== U && "__source" !== U)) {
                         if ("className" === U) {
                             if (y.class) continue;
                             U = "class";
@@ -568,7 +568,7 @@
                 z === N || ~z.indexOf("\n") ? w && ~N.indexOf("\n") && (N += "\n") : N = z;
             }
             if (N = "<" + x + N + ">", String(x).match(/[\s\n\\/='"\0<>]/)) throw new Error(x + " is not a valid HTML tag name in " + N);
-            var E = String(x).match(index_module_g);
+            var E = String(x).match(index_module_);
             E && (N = N.replace(/>$/, " />"));
             var I, Z = [];
             if (D) w && index_module_i(D) && (D = "\n" + k + index_module_a(D, k)), N += D; else if (y && index_module_c(I = [], y.children).length) {
@@ -1752,7 +1752,7 @@
                     if ("authorize" === intent) return actions.order.authorize().then(src_util_noop);
                     throw new Error("Unsupported intent for auto-capture: " + intent);
                 };
-            }(intent) : _ref4$onApprove, partnerAttributionID = _ref4.partnerAttributionID, onError = _ref4.onError, _ref4$upgradeLSAT = _ref4.upgradeLSAT, upgradeLSAT = void 0 !== _ref4$upgradeLSAT && _ref4$upgradeLSAT;
+            }(intent) : _ref4$onApprove, partnerAttributionID = _ref4.partnerAttributionID, onError = _ref4.onError, clientAccessToken = _ref4.clientAccessToken, vault = _ref4.vault, _ref4$upgradeLSAT = _ref4.upgradeLSAT, upgradeLSAT = void 0 !== _ref4$upgradeLSAT && _ref4$upgradeLSAT;
             var facilitatorAccessToken = _ref5.facilitatorAccessToken, createOrder = _ref5.createOrder;
             if (!onApprove) throw new Error("Expected onApprove");
             return memoize((function(_ref6, _ref7) {
@@ -1786,11 +1786,13 @@
                     getLogger().info("button_approve").track((_getLogger$info$track = {}, _getLogger$info$track.transition_name = "process_checkout_approve", 
                     _getLogger$info$track.context_type = "EC-Token", _getLogger$info$track.token = orderID, 
                     _getLogger$info$track.context_id = orderID, _getLogger$info$track)).flush();
-                    payerID || getSupplementalOrderInfo.reset();
+                    billingToken || subscriptionID || clientAccessToken || vault || payerID || getLogger().error("onapprove_payerid_not_present", {
+                        orderID: orderID
+                    }).flush();
                     return getSupplementalOrderInfo(orderID).then((function(supplementalData) {
                         var data = {
                             orderID: orderID,
-                            payerID: payerID = payerID || supplementalData && supplementalData.checkoutSession && supplementalData.checkoutSession.buyer && supplementalData.checkoutSession.buyer.userId,
+                            payerID: payerID,
                             paymentID: paymentID,
                             billingToken: billingToken = billingToken || supplementalData && supplementalData.checkoutSession && supplementalData.checkoutSession.cart && supplementalData.checkoutSession.cart.billingToken,
                             subscriptionID: subscriptionID,
@@ -2262,8 +2264,8 @@
                 id: "Path"
             }))));
         };
-        var style_scopedscopeId_fdd787a1 = __webpack_require__(2);
-        var style_scopedscopeId_fdd787a1_default = __webpack_require__.n(style_scopedscopeId_fdd787a1);
+        var style_scopedscopeId_d2ff3bcf = __webpack_require__(2);
+        var style_scopedscopeId_d2ff3bcf_default = __webpack_require__.n(style_scopedscopeId_d2ff3bcf);
         var walletItem_WalletItem = function(_ref) {
             var selected = _ref.selected, details = _ref.details, selectWalletItemHandler = _ref.selectWalletItemHandler, listOpen = _ref.listOpen, listOpenHandler = _ref.listOpenHandler;
             var _useState = hooks_module_m(selected), showSelected = _useState[0], setShowSelected = _useState[1];
@@ -2271,8 +2273,8 @@
                 setShowSelected(selected);
             }), [ selected ]);
             return preact_module_h(style_Style, {
-                css: style_scopedscopeId_fdd787a1_default.a,
-                "data-v-fdd787a1": ""
+                css: style_scopedscopeId_d2ff3bcf_default.a,
+                "data-v-d2ff3bcf": ""
             }, preact_module_h("div", {
                 className: "wallet-item " + (selected ? "selected-wallet-item" : ""),
                 onClick: function() {
@@ -2281,39 +2283,39 @@
                         listOpenHandler(!listOpen);
                     }(details.id);
                 },
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
             }, preact_module_h("div", {
                 className: "icon",
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
             }, preact_module_h("img", {
                 src: details.fundingOptionIcon,
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
             })), preact_module_h("div", {
                 className: "description",
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
             }, preact_module_h("div", {
                 className: "name",
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
             }, details.fundingOptionTitle), preact_module_h("div", {
                 className: "details",
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
             }, preact_module_h("span", {
                 className: "type",
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
             }, details.instrumentSubType, " "), preact_module_h("span", {
                 className: "digits",
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
             }, details.lastDigits))), details.showPreferredText ? preact_module_h("div", {
                 className: "preferred",
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
             }, "PREFERRED") : "", preact_module_h("div", {
                 className: "flex-spacer",
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
             }), showSelected ? preact_module_h("div", {
                 className: "selected",
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
             }, preact_module_h(check_Check, {
-                "data-v-fdd787a1": ""
+                "data-v-d2ff3bcf": ""
             })) : ""));
         };
         var style_scopedscopeId_d7b06a5e = __webpack_require__(3);
@@ -2358,8 +2360,8 @@
                 lastDigits: "PAYPAL" === subType ? "" : "•••• " + (digits || "")
             };
         };
-        var style_scopedscopeId_d2ff3bcf = __webpack_require__(4);
-        var style_scopedscopeId_d2ff3bcf_default = __webpack_require__.n(style_scopedscopeId_d2ff3bcf);
+        var style_scopedscopeId_fdd787a1 = __webpack_require__(4);
+        var style_scopedscopeId_fdd787a1_default = __webpack_require__.n(style_scopedscopeId_fdd787a1);
         var wallet_Wallet = function(_ref) {
             var checkoutSession = _ref.checkoutSession;
             var fundingOptions = checkoutSession.fundingOptions, _useState = hooks_module_m(!1), listOpen = _useState[0], setListOpen = _useState[1], _useState2 = hooks_module_m(fundingOptions[0]), selectedWalletItem = _useState2[0], setSelectedWalletItem = _useState2[1];
@@ -2370,20 +2372,20 @@
                 setSelectedWalletItem(newItem);
             };
             return preact_module_h(style_Style, {
-                css: style_scopedscopeId_d2ff3bcf_default.a,
-                "data-v-d2ff3bcf": ""
+                css: style_scopedscopeId_fdd787a1_default.a,
+                "data-v-fdd787a1": ""
             }, preact_module_h("div", {
                 className: "wallet",
-                "data-v-d2ff3bcf": ""
+                "data-v-fdd787a1": ""
             }, listOpen ? "" : preact_module_h(walletItem_WalletItem, {
                 selected: !0,
                 details: buildWalletItemDetails(selectedWalletItem),
                 selectWalletItemHandler: changeSelectedWalletItem,
                 listOpen: listOpen,
                 listOpenHandler: setListOpen,
-                "data-v-d2ff3bcf": ""
+                "data-v-fdd787a1": ""
             }), listOpen ? preact_module_h("div", {
-                "data-v-d2ff3bcf": ""
+                "data-v-fdd787a1": ""
             }, fundingOptions.map((function(option) {
                 return preact_module_h(walletItem_WalletItem, {
                     selected: option.id === selectedWalletItem.id,
@@ -2391,17 +2393,17 @@
                     selectWalletItemHandler: changeSelectedWalletItem,
                     listOpen: listOpen,
                     listOpenHandler: setListOpen,
-                    "data-v-d2ff3bcf": ""
+                    "data-v-fdd787a1": ""
                 });
             })), preact_module_h(credit_CreditBanner, {
                 checkoutSession: checkoutSession,
-                "data-v-d2ff3bcf": ""
+                "data-v-fdd787a1": ""
             }), preact_module_h("div", {
                 className: "add-card-button",
-                "data-v-d2ff3bcf": ""
+                "data-v-fdd787a1": ""
             }, preact_module_h("a", {
                 href: "#",
-                "data-v-d2ff3bcf": ""
+                "data-v-fdd787a1": ""
             }, "Add debit or credit card"))) : ""));
         };
         var page_style = __webpack_require__(5);
@@ -2522,6 +2524,8 @@
                     intent: intent,
                     onError: onError,
                     partnerAttributionID: partnerAttributionID,
+                    clientAccessToken: clientAccessToken,
+                    vault: vault,
                     upgradeLSAT: !1
                 }, {
                     facilitatorAccessToken: facilitatorAccessToken,
